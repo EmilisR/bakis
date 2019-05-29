@@ -550,40 +550,27 @@ Paskutinis žodis nurodo apibūdina išvestį:
 \end{itemize}
 
 \subsubsection{Vidinių tinklo lygių sintaksė}
-
-NOTE that all ops input and output the standard TF convention of a 4-d tensor: [batch, height, width, depth] regardless of any collapsing of dimensions. 
-This greatly simplifies things, and allows the VGSLSpecs class to track changes to the values of widths and heights, so they can be correctly passed in 
-to LSTM operations, and used by any downstream CTC operation.
-
-NOTE: in the descriptions below, <d> is a numeric value, and literals are described using regular expression syntax.
-
-NOTE: Whitespace is allowed between ops.
+Žemiau apraš
 
 \textbf{Funkcinės operacijos}
+Egzistuoja 5 skirtingos funkcinės operacijos:
 
-
-
-C(s|t|r|l|m)<y>,<x>,<d> Convolves using a y,x window, with no shrinkage,
-  random infill, d outputs, with s|t|r|l|m non-linear layer.
-F(s|t|r|l|m)<d> Fully-connected with s|t|r|l|m non-linearity and d outputs.
-  Reduces height, width to 1. Connects to every y,x,depth position of the input,
-  reducing height, width to 1, producing a single <d> vector as the output.
-  Input height and width *must* be constant.
-  For a sliding-window linear or non-linear map that connects just to the
-  input depth, and leaves the input image size as-is, use a 1x1 convolution
-  eg. Cr1,1,64 instead of Fr64.
-L(f|r|b)(x|y)[s]<n> LSTM cell with n outputs.
-  The LSTM must have one of:
-    f runs the LSTM forward only.
-    r runs the LSTM reversed only.
-    b runs the LSTM bidirectionally.
-  It will operate on either the x- or y-dimension, treating the other dimension
-  independently (as if part of the batch).
-  s (optional) summarizes the output in the requested dimension, outputting
-    only the final step, collapsing the dimension to a single element.
-LS<n> Forward-only LSTM cell in the x-direction, with built-in Softmax.
-LE<n> Forward-only LSTM cell in the x-direction, with built-in softmax,
-  with binary Encoding.
+\begin{itemize}
+  \item C(s|t|r|l|m)<y>,<x>,<d> - vykdoma konvoliucija naudojant y, x langelį, nenaudojant sutraukimo, su atsitiktiniu užpildu, d išvestimi bei \textit{s|t|r|l|m} aktyvavimo funkcija.
+  \item F(s|t|r|l|m)<d> - pilnai jungus lygis su \textit{s|t|r|l|m} aktyvavimo funkcija ir d išvestimi.
+  Sumažina aukštį ir plotį iki 1. Susijungia su kiekviena įvesties y, x bei gylio pozicija, sumažindamas aukštį, plotį iki 1 ir sugeneruodamas <d> vektorių kaip išvestį.
+  Įvesties aukštis ir plotis turi būti konstantos.
+  \item L(f|r|b)(x|y)[s]<n> - LSTM ląstelė su n išvesčių:
+  \begin{itemize}
+    \item \textit{f} - leidžia tik į priekį judantį LSTM lygį.
+    \item \textit{r} - leidžia tik priešinga kryptimi judantį LSTM lygį.
+    \item \textit{b} - leidžia abiejomis kryptimis judantį LSTM lygį.
+    \item Operacija veiks tik su x arba y kryptimi, ignoruojant kitą kryptį.
+    \item \textit{s} - neprivalomas argumentas, kuris grąžina kaip rezultatą tik paskutinį žingsnį, sutraukdamas dimensiją iki vieno elemento.
+  \end{itemize}
+  \item LS<n> - tik į priekį x kryptimi judanti LSTM ląstelė su integruota \textit{Softmax} aktyvacijos funkcija.
+  \item LE<n> - tik į priekį x kryptimi judanti LSTM ląstelė su integruota \textit{Softmax} aktyvacijos funkcija ir binariniu atkodavimu.
+\end{itemize}
 
 Aukščiau paminėtos raidės \textit{(s|t|r|l|m)} reiškia vieną iš aktyvacijos funkcijų:
 
@@ -595,13 +582,13 @@ Aukščiau paminėtos raidės \textit{(s|t|r|l|m)} reiškia vieną iš aktyvacij
   \item \textit{m} - \textit{Softmax} funkcija.
 \end{itemize}
 
-Examples:
+Pavyzdžiai:
 
-Cr5,5,32 Runs a 5x5 Relu convolution with 32 depth/number of filters.
-
-Lfx128 runs a forward-only LSTM, in the x-dimension with 128 outputs, treating the y dimension independently.
-
-Lfys64 runs a forward-only LSTM in the y-dimension with 64 outputs, treating the x-dimension independently and collapses the y-dimension to 1 element.
+\begin{itemize}
+  \item Cr5,5,32 - 5x5 Relu konvoliucija su 32 filtrais.
+  \item Lfx128 - tik į priekį judantis LSTM lygis, x dimensijoje turintis 128 išvestis, laikydamas y dimensiją nepriklausoma.
+  \item Lfys64 - tik į priekį judantis LSTM lygis, y dimensijoje turintis 64 išvestis, laikydamas x dimensiją nepriklausoma ir sutraukdamas y dimensiją iki 1 elemento.
+\end{itemize}
 
 \textbf{Plumbing ops}
 
