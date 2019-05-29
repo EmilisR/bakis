@@ -116,7 +116,14 @@ naudos kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą skirtą atp
 darbe sukurtą bei modifikuotą Tesseract LSTM neuroninio tinklo konfigūraciją.
 
 \sectionnonumnocontent{Eksperimente naudojami instrumentai}
---TODO
+Atlikti šiam eksperimentui buvo naudojami šie pagrindiniai įrankiai:
+
+\begin{itemize}
+  \item Tesseract - skirta atpažinti numeryje esančius simbolius.
+  \item Python - programavimo kalba naudota kurti programoms.
+  \item TensorFlow - skirta neuroninio tinklo pagalba atpažinti numerio rėmelį nuotraukoje.
+  \item OpenCV - skirta apdoroti paveikslėlius.
+\end{itemize}
 
 \pagebreak
 \section{Duomenų generavimas}
@@ -866,15 +873,30 @@ Taip pat yra galimybė pačiam vartotojui prisidėti norimus žodžius į Tesser
 Be žodžių, yra galimybė prisidėti simbolių sekų šablonus, kurie dar labiau padės pagerinti tikslumą.
 
 \subsubsection{Rinkmenų pasiruošimas}
+Bendrai mokymo žingsniai yra tokie:
+
+\begin{enumerate}
+  \item Pasiruošti norimą apmokyti tekstą.
+  \item Sugeneruoti paveiksliuką su tekstu + \textit{box} failu.
+  \item Sukurti \textit{unicharset} failą.
+  \item Iš \textit{unicharset} sukurti pradinę apmokymo duomenų failą ir nebūtiną žodynų informaciją. 
+  \item Paleisti \textit{Tesseract}, kad apdorotų paveikslėlį ir \textit{box} failą bei sukurtų apmokymo duomenų rinkinį.
+  \item Paleisti treniravimą su sukurtu duomenų rinkiniu.
+  \item Sujungti duomenų failus.
+\end{enumerate}
+
 Norint atlikti LSTM rekurentinio tinklo mokymą Tesseract 4.0 versijos aplinkoje, reikia susigeneruoti atitinkamo formato mokymo rinkmenas.
 Kiekvienas sugeneruotas automobilio numeris turi turėti 5 skirtingus rinkmenas:
-\begin{itemize} --TODO
+\begin{itemize}
   \item .box formato - 
   \item .lstmf formato - 
   \item .gt.txt formato - tekstinė rinkmena, kurioje yra tekstas, kuris yra pavaizduotas paveikslėlyje.
   \item .txt formato - 
   \item .tif formato - paveiksliukas, išsaugotas TIFF formatu.
 \end{itemize}
+
+
+
 
 --TODO
 https://github.com/tesseract-ocr/tesseract/wiki/TrainingTesseract-4.00
