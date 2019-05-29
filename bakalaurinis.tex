@@ -469,52 +469,40 @@ Užtenka įvaldyti VGSL kalbos sintaksines ypatybes, kad būtų įmanoma taisykl
 \subsubsection{Bendrai apie LSTM}
 LSTM yra 
 
-The LSTM contains special units called memory blocks in the recurrent hidden layer. 
-The memory blocks contain memory cells with self-connections storing the temporal state of the network in addition to special multiplicative units called gates to control the flow of information. 
-Each memory block in the original architecture contained an input gate and an output gate.
-The input gate controls the flow of input activations into the memory cell. 
-The output gate controls the output flow of cell activations into the rest of the network. 
-Later, the forget gate was added to the memory block [18]. 
-This addressed a weakness of LSTM models preventing them from processing continuous input streams that are not segmented into subsequences.
-The forget gate scales the internal state of the cell before adding it as input to the cell through the self-recurrent connection of the cell, therefore adaptively forgetting or resetting the cell’s memory. 
-In addition, the modern LSTM architecture contains peephole connections from its internal cells to the gates in the same cell to learn precise timing of the outputs [19].
-An LSTM network computes a mapping from an input sequence 
+LSTM tinklo paslėptame rekurentiniame lygyje yra specialūs vienetai - atminties blokai.
+Atminties blokuose yra atminties ląstelių saugančių laikiną tinklo būseną pridedant dar specialius 
+dauginamuosius vienetus, taip vadinamus vartus, kurie kontroliuoja informacijos srauto tėkmę.
+Kiekvienas atminties blokas originalioje architektūroje yra sudarytas iš įvesties ir išvesties vartų.
+Įvesties vartai kontroliuoja įvesties aktyvacijų informacijos tėkmę į atminties ląstelę.
+Išvesties vartai kontroliuoja ląstelių aktyvacijos išvesties informacijos tėkmę atgal į tinklą.
+Vėliau į atminties bloką pridedami atminties praradimo vartai. 
+Tai sprendžia vieną iš LSTM modelio silpnybių, kai įvestis nėra suskirstyta į atskiras sekas ir apdorojimas niekad nesibaigia.
+Atminties praradimo vartai keičia vidinę ląstelės būseną prieš patalpinant ją į ląstelę per rekurentinį ryšį su pačia savim,
+tuo pačiu įgalinant pamiršti ar ištrinti ląstelės atmintį.
+LSTM tinklas skaičiuoja sąryšius nuo įvesties sekos
 \begin{equation*}
   x = (x1, ..., xT) 
 \end{equation*}
-to an output sequence 
+iki išvesties sekos
 \begin{equation*}
   y = (y1, ..., yT)
 \end{equation*}
-by calculating the network unit activations using the following equations iteratively from t = 1 to T:
-\begin{equation*}
-  i_t = \sigma(W_{ix}x_t + W_{im}m_{t−1} + W_{ic}c_{t−1} + b_i) (1)
-\end{equation*}
-\begin{equation*}
-  f_t = \sigma(W_{fx}x_t + W_{fm}m_{t−1} + W_{fc}c_{t−1} + b_f) (2)
-\end{equation*}
-\begin{equation*}
-  c_t = f_t \odot c_{t−1} + i_t\odot g(W_{cx}x_t + W_{cm}m_{t−1} + b_c) (3)
-\end{equation*}
-\begin{equation*}
-  o_t = \sigma(W_{ox}x_t + W_{om}m_{t−1} + W_{oc}c_t + b_o) (4)
-\end{equation*}
-\begin{equation*}
-  m_t = o_t \odot h(c_t) (5)
-\end{equation*}
-\begin{equation*}
-  y_t = \phi(W_{ym}m_t + b_y) (6)
-\end{equation*}
+atlikdamas tinklo vienetų aktyvacijų funkcijas pagal žemiau nurodytas formules iš eilės nuo t = 1 iki T:
+\[i_t = \sigma(W_{ix}x_t + W_{im}m_{t−1} + W_{ic}c_{t−1} + b_i) (1)\]
+\[f_t = \sigma(W_{fx}x_t + W_{fm}m_{t−1} + W_{fc}c_{t−1} + b_f) (2)\]
+\[c_t = f_t \odot c_{t−1} + i_t\odot g(W_{cx}x_t + W_{cm}m_{t−1} + b_c) (3)\]
+\[o_t = \sigma(W_{ox}x_t + W_{om}m_{t−1} + W_{oc}c_t + b_o) (4)\]
+\[m_t = o_t \odot h(c_t) (5)\]
+\[y_t = \phi(W_{ym}m_t + b_y) (6)\]
+kur \textit{W} apibrėžia svorių matricas (pvz.: \(W_{ix}\) yra svorių matrica nuo įvesties vartų iki pačios įvesties), 
+\(W_{ic}\), \(W_{fc}\), \(W_{oc}\) yra įstrižos svorių matricos skirtos skylučių jungtims
+\footnote{Skylutės jungtis (angl. peephole connection) - LSTM tinklo ypatybė, kai vartai priklausoma ne tik nuo buvusios paslėptos būsenos, bet ir nuo buvusios vidinės būsenos)},
+\textit{b} apibūdina išvesties vektorius, kurie neturi jokios įvesties,
+\(\sigma\) yra logistinė sigmoidinė funkcija, \textit{i}, \textit{f}, \textit{o}, \textit{c} yra atitinkamai
+įvesties vartai, atminties praradimo vartai, išvesties vartai ir ląstelės aktyvacijos vektoriai, kurių visų dydis yra toks pat 
+kaip ir ląstelės išvesties aktyvacijos vektoriaus \textit{m}, \(\odot\) yra vektorių elementas, \textit{g} ir \textit{h} yra ląstelės
+įvestis ir ląstelės išvesties aktyvacijos funkcijos, \textit{tanh} ir \(\phi\) yra tinklo išvesties aktyvacijos funkcija - \textit{Softmax} \cite{sak2014long}.
 
-where the W terms denote weight matrices (e.g. Wix is the matrix of weights from the input gate to the input), Wic, Wf c, Woc are diagonal weight matrices for peephole connections, the b
-terms denote bias vectors (bi is the input gate bias vector), σ is
-the logistic sigmoid function, and i, f, o and c are respectively
-the input gate, forget gate, output gate and cell activation vectors, all of which are the same size as the cell output activation
-vector m,  is the element-wise product of the vectors, g and h
-are the cell input and cell output activation functions, generally
-and in this paper tanh, and φ is the network output activation
-function, softmax in this paper.
-\cite{sak2014long}
 \begin{minipage}{\linewidth}
   \centering
   \includegraphics[width=12cm]{memory_block.png}
@@ -1063,7 +1051,7 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
   \item SSE
   \item AVX
   \item SIMD
-  \item CTC - https://en.wikipedia.org/wiki/Connectionist_temporal_classification
+  \item CTC - %https://en.wikipedia.org/wiki/Connectionist_temporal_classification
   \item 
   \item 
   \item 
