@@ -508,39 +508,41 @@ Taip pat yra keletas kitų metodų, kurie turėtų būti įgyvendinti, priklauso
 \end{itemize}
 
 \subsubsection{VGSL specifikacijos}
+Kintamo dydžio grafų aprašymo kalba (angl. Variable-size Graph Specification Language) įgalina lengvai aprašyti neuroninį tinklą, 
+susidarantį iš konvoliucijų ar LSTM tinklo ypatybių, kuris gali apdoroti kintamo dydžio paveikslėlius panaudojant vienos teksto eilutės ilgio aprašytą tinklo specifikaciją.
 
-VGSL Specs - rapid prototyping of mixed conv/LSTM networks for images
-Variable-size Graph Specification Language (VGSL) enables the specification of a neural network, composed of convolutions and LSTMs, 
-that can process variable-sized images, from a very short definition string.
+\sectionnonumnocontent{VGSL pritaikymas}
+VGSL kalba sukurta aprašyti neuroniniems tinklams, kurie:
 
-\sectionnonumnocontent{Applications: What is VGSL Specs good for?}
+\begin{itemize}
+  \item Kintamo dydžio (tinka ir fiksuoto dydžio) paveikslėlius naudoja kaip įvestį (vienoje ar dvejose dimensijose).
+  \item Gauna rezultatą kaip reikšmių matricą, tekstą ar kategoriją.
+  \item Konvoliucijos ir LSTM tinklai yra pagrindinis skaičiavimo komponentas.
+\end{itemize}
 
-VGSL Specs are designed specifically to create networks for:
-
-Variable size images as the input. (In one or BOTH dimensions!)
-Output an image (heat map), sequence (like text), or a category.
-Convolutions and LSTMs are the main computing component.
-Fixed-size images are OK too!
-
-\textbf{Model string input and output}
-
-A neural network model is described by a string that describes the input spec, the output spec and the layers spec in between. Example:
+\textbf{Modelį aprašančios teksto eilutės įvestis ir išvestis}
+Neuroninio tinklo modelį aprašo teksto eilutė, kurioje yra aprašomos įvesties, išvesties ir tinklo lygių specifikacijos. 
+Pavyzdys: 
 
 \begin{verbatim}
   [1,0,0,3 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]
 \end{verbatim}
 
-The first 4 numbers specify the size and type of the input, and follow the TensorFlow convention for an image tensor: [batch, height, width, depth]. 
-Batch is currently ignored, but eventually may be used to indicate a training mini-batch size. Height and/or width may be zero, allowing them to be variable. 
-A non-zero value for height and/or width means that all input images are expected to be of that size, and will be bent to fit if needed. 
-Depth needs to be 1 for greyscale and 3 for color. As a special case, a different value of depth, and a height of 1 causes the image to 
-be treated from input as a sequence of vertical pixel strips. NOTE THAT THROUGHOUT, x and y are REVERSED from conventional mathematics, 
-to use the same convention as TensorFlow. The reason TF adopts this convention is to eliminate the need to transpose images on input, 
-since adjacent memory locations in images increase x and then y, while adjacent memory locations in tensors in TF, and NetworkIO in 
-tesseract increase the rightmost index first, then the next-left and so-on, like C arrays.
+Pirmi 4 numeriai aprašo įvesties dydį ir tipą. Tai atitinka TensorFlow sistemos paveikslėlio tenzoriaus konvenciją: [paketas, aukštis, plotis, gylis].
+Šiuo atveju paketas yra ignoruojamas, bet gali būti panaudotas aprašant treniravimo paketo dydį.
+Aukštis ir/ar plotis gali būti lygus 0, tokiu būdu jie tampa kintamo dydžio.
+Nenulinės aukščio ir/ar pločio reikšmės reiškia, kad visi įvesties paveikslėliai bus vienodo dydžio arba bus suspausti iki galimo dydžio jei reikės.
+Gylio reikšmė 1 nurodo, kad paveikslėlis yra juodai baltas, reikšmė 3 nurodo, kad naudojamos visos spalvos.
+Yra specialus atvejis, kai nurodomas gylis su kitokia reikšme nei 1 ar 3 ir aukščiu - 1. Tokiu atveju tai bus traktuojama kaip vertikalių pikselių juostų seka.
+Paskutinis žodis nurodo apibūdina išvestį:
 
-The last "word" is the output specification and takes the form:
-
+\begin{itemize}
+  \item Bendrinis išvesties formatas su n klasių - \textit{O(2|1|0)(l|s|c)n}:
+  \begin{itemize}
+    \item 2 (reikšmių matrica) - išvestis yra 2D 
+  \end{itemize}
+  \item Klasių skaičius yra ignoruojamas (palikta dėl suderinamumo su TensorFlow) ir tikras skaičius paimamas iš \textit{unicharset} failo.
+\end{itemize}
 O(2|1|0)(l|s|c)n output layer with n classes.
   2 (heatmap) Output is a 2-d vector map of the input (possibly at
     different scale). (Not yet supported.)
