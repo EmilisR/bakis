@@ -539,23 +539,17 @@ Paskutinis žodis nurodo apibūdina išvestį:
 \begin{itemize}
   \item Bendrinis išvesties formatas su n klasių - \textit{O(2|1|0)(l|s|c)n}:
   \begin{itemize}
-    \item 2 (reikšmių matrica) - išvestis yra 2D 
+    \item \textit{2} (reikšmių matrica) - išvestis yra dviejų dimensijų įvesties vektorių žemėlapis.
+    \item \textit{1} (seka) - išvestis yra vienos dimensijos vektoriaus reikšmių seka.
+    \item \textit{0} (kategorija) - išvestis yra vieno vektoriaus reikšmė.
+    \item \textit{l} naudoja logistinę netiesinę funkciją, įgalinant išvesti keletą rezultatų bet kuriai išvesties vektoriaus reikšmei.
+    \item \textit{s} naudoja Softmax netiesinę aktyvacijos funkciją, išvedant vieną rezultatą kiekvienai reikšmei.
+    \item \textit{c} naudoja Softmax su CTC aktyvacijos funkciją. Gali būti naudojama tik su seka.
   \end{itemize}
   \item Klasių skaičius yra ignoruojamas (palikta dėl suderinamumo su TensorFlow) ir tikras skaičius paimamas iš \textit{unicharset} failo.
 \end{itemize}
-O(2|1|0)(l|s|c)n output layer with n classes.
-  2 (heatmap) Output is a 2-d vector map of the input (possibly at
-    different scale). (Not yet supported.)
-  1 (sequence) Output is a 1-d sequence of vector values.
-  0 (category) Output is a 0-d single vector value.
-  l uses a logistic non-linearity on the output, allowing multiple
-    hot elements in any output vector value. (Not yet supported.)
-  s uses a softmax non-linearity, with one-hot output in each value.
-  c uses a softmax with CTC. Can only be used with s (sequence).
-  NOTE Only O1s and O1c are currently supported.
-The number of classes is ignored (only there for compatibility with TensorFlow) as the actual number is taken from the unicharset.
 
-\subsubsection{Syntax of the Layers in between}
+\subsubsection{Vidinių tinklo lygių sintaksė}
 
 NOTE that all ops input and output the standard TF convention of a 4-d tensor: [batch, height, width, depth] regardless of any collapsing of dimensions. 
 This greatly simplifies things, and allows the VGSLSpecs class to track changes to the values of widths and heights, so they can be correctly passed in 
@@ -565,7 +559,9 @@ NOTE: in the descriptions below, <d> is a numeric value, and literals are descri
 
 NOTE: Whitespace is allowed between ops.
 
-\textbf{Functional ops}
+\textbf{Funkcinės operacijos}
+
+
 
 C(s|t|r|l|m)<y>,<x>,<d> Convolves using a y,x window, with no shrinkage,
   random infill, d outputs, with s|t|r|l|m non-linear layer.
@@ -588,13 +584,17 @@ L(f|r|b)(x|y)[s]<n> LSTM cell with n outputs.
 LS<n> Forward-only LSTM cell in the x-direction, with built-in Softmax.
 LE<n> Forward-only LSTM cell in the x-direction, with built-in softmax,
   with binary Encoding.
-In the above, (s|t|r|l|m) specifies the type of the non-linearity:
 
-s = sigmoid
-t = tanh
-r = relu
-l = linear (i.e., No non-linearity)
-m = softmax
+Aukščiau paminėtos raidės \textit{(s|t|r|l|m)} reiškia vieną iš aktyvacijos funkcijų:
+
+\begin{itemize}
+  \item \textit{s} - sigmoido funkcija.
+  \item \textit{t} - hiperbolinio tangento funkcija.
+  \item \textit{r} - \textit{Relu} funkcija.
+  \item \textit{l} - linijinė funkcija.
+  \item \textit{m} - \textit{Softmax} funkcija.
+\end{itemize}
+
 Examples:
 
 Cr5,5,32 Runs a 5x5 Relu convolution with 32 depth/number of filters.
@@ -964,6 +964,8 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
   \item Tensorflow
   \item OpenMP
   \item Tenzorius - geometrinis objektas, susidedantis iš sumos komponenčių, kurios yra transformuojamos pagal tiesinius sąryšius.
+  \item Softmax
+  \item Relu
 \end{itemize}
 
 \sectionnonum{Santrumpos}
@@ -979,7 +981,7 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
   \item SSE
   \item AVX
   \item SIMD
-  \item 
+  \item CTC - https://en.wikipedia.org/wiki/Connectionist_temporal_classification
   \item 
   \item 
   \item 
