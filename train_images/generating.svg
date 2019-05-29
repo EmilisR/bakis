@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" sodipodi:docname="pipeline.svg" inkscape:version="0.48.2 r9819"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 703.6 540.1"
+	 enable-background="new 0 0 703.6 540.1" xml:space="preserve">
+<filter  inkscape:label="Drop shadow" x="-0.25" y="-0.25" id="filter5591" height="1.5" width="1.5" color-interpolation-filters="sRGB">
+	<feGaussianBlur  stdDeviation="2" result="blur" in="SourceAlpha" id="feGaussianBlur5593"></feGaussianBlur>
+	<feColorMatrix  type="matrix" result="bluralpha" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0 " id="feColorMatrix5595">
+		</feColorMatrix>
+	<feOffset  dy="4" dx="4" result="offsetBlur" in="bluralpha" id="feOffset5597"></feOffset>
+	<feMerge  id="feMerge5599">
+		<feMergeNode  in="offsetBlur" id="feMergeNode5601"></feMergeNode>
+		<feMergeNode  in="SourceGraphic" id="feMergeNode5603"></feMergeNode>
+	</feMerge>
+</filter>
+<filter  inkscape:label="Drop shadow" x="-0.25" y="-0.25" id="filter5563" height="1.5" width="1.5" color-interpolation-filters="sRGB">
+	<feGaussianBlur  stdDeviation="2" result="blur" in="SourceAlpha" id="feGaussianBlur5565"></feGaussianBlur>
+	<feColorMatrix  type="matrix" result="bluralpha" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0 " id="feColorMatrix5567">
+		</feColorMatrix>
+	<feOffset  dy="4" dx="4" result="offsetBlur" in="bluralpha" id="feOffset5569"></feOffset>
+	<feMerge  id="feMerge5571">
+		<feMergeNode  in="offsetBlur" id="feMergeNode5573"></feMergeNode>
+		<feMergeNode  in="SourceGraphic" id="feMergeNode5575"></feMergeNode>
+	</feMerge>
+</filter>
+<filter  inkscape:label="Drop shadow" x="-0.25" y="-0.25" id="filter5549" height="1.5" width="1.5" color-interpolation-filters="sRGB">
+	<feGaussianBlur  stdDeviation="2" result="blur" in="SourceAlpha" id="feGaussianBlur5551"></feGaussianBlur>
+	<feColorMatrix  type="matrix" result="bluralpha" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0 " id="feColorMatrix5553">
+		</feColorMatrix>
+	<feOffset  dy="4" dx="4" result="offsetBlur" in="bluralpha" id="feOffset5555"></feOffset>
+	<feMerge  id="feMerge5557">
+		<feMergeNode  in="offsetBlur" id="feMergeNode5559"></feMergeNode>
+		<feMergeNode  in="SourceGraphic" id="feMergeNode5561"></feMergeNode>
+	</feMerge>
+</filter>
+<filter  inkscape:label="Drop shadow" x="-0.25" y="-0.25" id="filter5535" height="1.5" width="1.5" color-interpolation-filters="sRGB">
+	<feGaussianBlur  stdDeviation="2" result="blur" in="SourceAlpha" id="feGaussianBlur5537"></feGaussianBlur>
+	<feColorMatrix  type="matrix" result="bluralpha" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0 " id="feColorMatrix5539">
+		</feColorMatrix>
+	<feOffset  dy="4" dx="4" result="offsetBlur" in="bluralpha" id="feOffset5541"></feOffset>
+	<feMerge  id="feMerge5543">
+		<feMergeNode  in="offsetBlur" id="feMergeNode5545"></feMergeNode>
+		<feMergeNode  in="SourceGraphic" id="feMergeNode5547"></feMergeNode>
+	</feMerge>
+</filter>
+<sodipodi:namedview  inkscape:cx="319.93208" showgrid="false" pagecolor="#cccccc" bordercolor="#666666" inkscape:zoom="0.98994949" fit-margin-top="0" inkscape:cy="222.5675" fit-margin-left="0" borderopacity="1.0" id="base" fit-margin-bottom="0" fit-margin-right="0" inkscape:window-maximized="1" inkscape:window-y="-9" inkscape:window-x="-9" inkscape:window-height="1013" inkscape:window-width="1920" inkscape:current-layer="layer1" inkscape:document-units="px" inkscape:pageshadow="2" inkscape:pageopacity="0">
+	</sodipodi:namedview>
+<image overflow="visible" filter="url(#filter5591)" enable-background="new    " width="128" height="64" id="image3835" xlink:href="89C8FB34.jpg"  transform="matrix(1 0 0 1 32 16)">
+</image>
+<image overflow="visible" filter="url(#filter5563)" enable-background="new    " width="204" height="42" id="image3890" xlink:href="89C8FB31.jpg"  transform="matrix(0.8305 0 0 1 436.5714 27)">
+</image>
+<image overflow="visible" filter="url(#filter5535)" enable-background="new    " width="128" height="64" id="image3901" xlink:href="89C8FB32.jpg"  transform="matrix(1 0 0 1 240.8572 156.7142)">
+</image>
+<image overflow="visible" filter="url(#filter5549)" enable-background="new    " width="128" height="64" id="image3912" xlink:href="89C8FB33.jpg"  transform="matrix(1 0 0 1 488 163.6667)">
+</image>
+<path fill="none" d=""/>
+<path id="path3935" inkscape:connector-curvature="0" stroke="#000000" d="M304.9,152.2"/>
+<path fill="none" d=""/>
+<path id="path3935-5" inkscape:connector-curvature="0" stroke="#000000" d="M552.9,152.2"/>
+<path fill="none" d=""/>
+<path id="path3935-7" inkscape:connector-curvature="0" stroke="#000000" d="M304.9,302.2"/>
+<path fill="none" d=""/>
+<path id="path3935-7-4" inkscape:connector-curvature="0" stroke="#000000" d="M304.9,454.2"/>
+<path fill="none" d=""/>
+<path id="path4541" sodipodi:nodetypes="cc" inkscape:connector-curvature="0" stroke="#000000" d="M199,431.6"/>
+<path fill="none" d=""/>
+<path id="path4541-2" sodipodi:nodetypes="cc" inkscape:connector-curvature="0" stroke="#000000" d="M355.2,429.3"/>
+<text transform="matrix(1 0 0 1 322.5309 272.4003)" font-family="'MyriadPro-Regular'" font-size="22.1008">Kompozicija</text>
+<text transform="matrix(1 0 0 1 323.1136 118.3277)" font-family="'MyriadPro-Regular'" font-size="22.1008">Transformacija</text>
+<text transform="matrix(1 0 0 1 323.664 421.3734)" font-family="'MyriadPro-Regular'" font-size="22.1008">Triukšmo pridėjimas</text>
+<image overflow="visible" width="636" height="175" xlink:href="89C8FB3C.jpg"  transform="matrix(0.24 0 0 0.24 228.537 27)">
+</image>
+<image overflow="visible" width="636" height="175" xlink:href="89C8FB3D.jpg"  transform="matrix(0.1225 -2.746256e-003 2.746256e-003 0.1225 265.6666 198.4707)">
+</image>
+<g>
+	
+		<image overflow="visible" filter="url(#filter5591)" enable-background="new    " width="128" height="64" id="image3835_2_" xlink:href="89C8FB3E.jpg"  transform="matrix(1 0 0 1 240.8572 302.2249)">
+	</image>
+	
+		<image overflow="visible" width="636" height="175" xlink:href="89C8FB3F.jpg"  transform="matrix(0.1225 -2.746256e-003 2.746256e-003 0.1225 265.6666 342.9608)">
+	</image>
+</g>
+<image overflow="visible" width="533" height="267" xlink:href="../image.png"  transform="matrix(0.2402 0 0 0.2402 240.8572 467.3566)">
+</image>
+<g>
+	<g>
+		<line fill="none" stroke="#000000" x1="304.9" y1="80" x2="304.9" y2="141.5"/>
+		<g>
+			<polygon points="301.2,138.7 304.9,140.3 308.6,138.7 304.9,147.5 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line fill="none" stroke="#000000" x1="304.9" y1="227.7" x2="304.9" y2="289.2"/>
+		<g>
+			<polygon points="301.2,286.4 304.9,288 308.6,286.4 304.9,295.2 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line fill="none" stroke="#000000" x1="304.9" y1="382" x2="304.9" y2="443.5"/>
+		<g>
+			<polygon points="301.2,440.7 304.9,442.3 308.6,440.7 304.9,449.5 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<line fill="none" stroke="#000000" x1="552" y1="82" x2="552" y2="143.5"/>
+		<g>
+			<polygon points="548.3,140.7 552,142.3 555.7,140.7 552,149.5 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<path fill="none" stroke="#000000" d="M96,96c0,127.4,46.7,231.3,105.5,237.9"/>
+		<g>
+			<polygon points="198.5,337.3 200.3,333.7 199,329.9 207.5,334.2 			"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<path fill="none" stroke="#000000" d="M552.9,238c0,55.6-60.9,100.9-137.4,103.1"/>
+		<g>
+			<polygon points="418.2,337.4 416.7,341.1 418.3,344.8 409.5,341.2 			"/>
+		</g>
+	</g>
+</g>
+</svg>

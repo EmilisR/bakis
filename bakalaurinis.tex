@@ -1,0 +1,1020 @@
+\documentclass{VUMIFInfBakalaurinis}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{subfig}
+\usepackage{wrapfig}
+
+% Titulinio aprašas
+\university{Vilniaus universitetas}
+\faculty{Informatikos institutas}
+\department{Programų Sistemų katedra}
+\papertype{Bakalauro baigiamasis darbas}
+\title{Automobilių numerių atpažinimas naudojant Tesseract LSTM rekurentinį neuroninį tinklą}
+\titleineng{Car Number Plate Recognition Using Tesseract LSTM Recurrent Neural Network}
+\status{4 kurso 5 grupės studentas}
+\author{Emilis Ruzveltas}
+\supervisor{dr. Vytautas Valaitis}
+\reviewer{lekt. Tomas Smagurauskas}
+\date{Vilnius \\ \the\year}
+
+% Nustatymai
+\setmainfont{Palemonas}   % Pakeisti teksto šriftą į Palemonas (turi būti įdiegtas sistemoje)
+\bibliography{bibliografija} 
+
+\begin{document}
+\maketitle
+
+\sectionnonumnocontent{Santrauka}
+% Santraukose lietuvių ir anglų kalbomis glaustai aprašomas darbo turinys: pristatoma
+% nagrinėta problema ir padarytos išvados. Santraukų gale nurodomi darbo raktiniai žodžiai.
+% Santraukos lietuvių ir anglų kalbomis rašomos atskiruose puslapiuose. Kiekvienos jų apimtis – ne
+% daugiau kaip 0,5 puslapio. 
+\newpage
+\sectionnonumnocontent{Summary}
+% Santraukose lietuvių ir anglų kalbomis glaustai aprašomas darbo turinys: pristatoma
+% nagrinėta problema ir padarytos išvados. Santraukų gale nurodomi darbo raktiniai žodžiai.
+% Santraukos lietuvių ir anglų kalbomis rašomos atskiruose puslapiuose. Kiekvienos jų apimtis – ne
+% daugiau kaip 0,5 puslapio. 
+\newpage
+\tableofcontents
+
+\pagebreak
+\sectionnonum{Įvadas}
+% Įvade apibrėžiamas tiriamasis objektas akcentuojant neapibrėžtumą, kuris bus išspręstas
+% darbe, aprašomas temos aktualumas, nurodomas darbo tikslas ir uždaviniai, kuriais bus
+% įgyvendinamas tikslas, aptariamos teorinės darbo prielaidos bei metodika, apibūdinami su tema
+% susiję literatūros ar kitokie šaltiniai, temos analizės tvarka, darbo atlikimo aplinkybės, pateikiama
+% žinių apie naudojamus instrumentus (programas ir kt., jei darbe yra eksperimentinė dalis). Darbo
+% įvadas neturi būti dėstymo santrauka. Įvado apimtis 2–4 puslapiai. 
+Pagrindinis automobilių atpažinimo sistemų tikslas yra automatizuoti vaizdo stebėjimą ir
+apdorojimą bei automatiškai surinkti įvairią informaciją apie transporto priemonę. Automobilių
+numerių atpažinimo sistemos remiasi tuo, kad kiekviena transporto priemonė turi unikalų 
+identifikacinį kodą, kuris leidžia vienareikšmiškai nustatyti transporto priemonės savininką. Techniškai
+automobilių numerių atpažinimas yra paveikslėlių apdorojimo programa, naudojantis specialiu 
+algoritmu išgauti rezultatus iš paveikslėlio. Automatinis paveikslėlių atpažinimas turi platų spektrą
+pritaikimo sričių, tokių kaip automobilių patikra, automatinis kelių mokesčių surinkimas, išmanus
+eismo reguliavimas \cite{bhushan2013license}. Didžioji dauguma automobilio numerių atpažinimo sistemų remiasi
+optine ženklų atpažinimo sistema. Jų apdorojimo greitis yra pakankamai greitas, kad būtų 
+efektyviai išnaudojama įvairiose srityse. Tačiau dažniausiai yra kuriamos specializuotos atpažinimo
+programos skirtingiems regionams. Panaudojus neuroninius tinklus galima būtų apmokyti 
+atpažinti numerius, kurių formatai yra skirtingi. Taip pat galima būtų pagreitinti procesą iškerpant
+numerio rėmelį iš paveikslėlio pasinaudojus neuroniniais tinklais. Norint pagreitinti patį 
+teksto atpažinimą galima naudoti rekurentinį neuroninį tinklą su LSTM savybėmis \cite{li2016reading}. Šiame
+darbe naudosime kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą, kuris yra skirtas 
+atpažinti numerio rėmelio koordinates. Taip pat pritaikysime bei modifikuosime Tesseract LSTM
+rekurentinį neuroninį tinklą, kuris sugebės atpažinti automobilio numerio simbolius \cite{smith2007overview}.
+
+\sectionnonumnocontent{Darbo tikslas}
+Sukurti programą, kuri gebėtų atpažinti lietuviškus automobilio numerius paveikslėlyje panaudojant Tesseract LSTM rekurentinį neuroninį tinklą.
+
+\sectionnonumnocontent{Uždaviniai}
+--TODO
+\begin{enumerate}
+  \item Pasinaudojus paveikslėlių duomenų rinkiniu susigeneruoti 1.000.000 atsitiktinių paveikslėlių su automobilio numeriais.
+  \item Apmokyti kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą (rėmelio atpažinimui) pateikiant sugeneruotus paveikslėlius.
+  \item Apmokyti Tesseract LSTM rekurentinį neuroninį tinklą (teksto atpažinimui) pateikiant sugeneruotus paveikslėlius.
+  \item Pasinaudojus kursinio darbo metu sukurtu ir apmokytu konvoliuciniu neuroniniu tinklu atpažinti numerio rėmelį paveikslėlyje ir gauti jo koordinates.
+  \item Pagal gautas koordinates, iškirpti rėmelį ir pasinaudojus Tesseract LSTM neuroniniu tinklu atpažinti numerį bei atvaizduoti gautus rezultatus pradiniame paveikslėlyje.
+  \item Ištestuoti tinklą su tikrais paveikslėliais, kuriuose yra lietuviški automobilių numeriai.
+\end{enumerate}
+
+\sectionnonumnocontent{Darbo prielaidos ir metodika}
+Šiais laikais, kai dominuoja naujosios technologijos, paremtos dirbtiniu intelektu, svarbu
+analizuoti ir gilintis į procesus, kurie nusako kaip veikia neuroniniai tinklai. Analizuojant bei 
+tobulinant dirbtinio intelekto sistemas, galima pasiekti greitesnių bei efektyvesnių rezultatų nei
+naudojant tradicinius atpažinimo metodus.
+
+Tyrimo objektas yra automobilių numerių atpažinimas. Bus tiriama kaip vyksta teksto atpažinimas pasitelkiant dirbtinius neuroninius tinklus.
+
+Pagrindinis šio tyrimo metodas - rekurentinio LSTM dirbtinio neuroninio tinklo veikimo
+analizė. Analizuojama pasitelkiant įvairius mokslinius šaltinius, straipsnius, publikacijas, knygas.
+Kitoje darbo dalyje bus atliekamas eksperimentas pritaikant teoriją.
+
+\sectionnonumnocontent{Literatūros šaltinių apžvalga}
+Bendrai apie LSTM
+--TODO 2h
+
+
+\sectionnonumnocontent{Darbo atlikimo procesas}
+Pirmiausia bus gilinamasi į Tesseract LSTM neuroninio tinklo veikimo principus \cite{bhushan2013license}.
+Išanalizavus, bus bandoma apmokyti neuroninį tinklą su kursinio darbo metu sugeneruotais 
+paveikslėliais. Atlikus apmokymą, reikės analizuoti ir gerintį tikslumą keičiant neuroninio tinklo
+specifikaciją. Galiausiai norint pasiekti dar didesnę spartą ir tikslumą, tinklas bus pritaikytas 
+atpažinti lietuviškus automobilio numerius. Atlikus šį eksperimentą bus sukurta programa, kuri
+naudos kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą skirtą atpažinti rėmelį bei šiame
+darbe sukurtą bei modifikuotą Tesseract LSTM neuroninio tinklo konfigūraciją.
+
+\sectionnonumnocontent{Eksperimente naudojami instrumentai}
+
+\pagebreak
+\section{Duomenų generavimas}
+
+\subsection{Rėmelio atpažinimui skirtų duomenų generavimas} \label{Mokymo duomenų generavimas}
+Norint sukurti realiai veikiančią programą, kuri naudotų neuroninį tinklą išgauti tikėtinam rezultatui,
+tinklą reikia apmokyti su dideliu kiekiu duomenų. Apmokant bet kokį neuroninį tinklą turi būti būti pateiktas
+duomenų rinkinys su norimu gauti rezultatu. 
+
+\subsubsection{Pirminis duomenų generavimo variantas}
+--TODO
+aprašymas 10min
+
+\subsubsubsection{Generavimo parametrai}
+
+Šiam tyrimui buvo pasirinkta generuoti duomenų rinkinį, kurių kiekvienas paveikslėlis būtų 128 pikselių
+pločio ir 64 pikselių ilgio. Toks pasirinktas būdas užtikrina, kad neuroninis tinklas bus pajėgus suprasti 
+paveikslėlio turinį, o dydis pakankamai mažas, kad būtų galima turėti efektyviai veikiantį neuroninį tinklą.
+
+\begin{figure}[ht!]
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{train_images/1_good.png}
+  \captionof{figure}{Tikimasis rezultatas \textbf{MNI144 1}.}
+\end{subfigure}
+
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{train_images/1_good2.png}
+  \captionof{figure}{Tikimasis rezultatas \textbf{ZVM557 1}.}
+\end{subfigure}
+
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{train_images/0_small.png}
+  \captionof{figure}{Tikimasis rezultatas \textbf{COH150 0} (per mažas numeris).}
+\end{subfigure}
+
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{train_images/0_truncated.png}
+  \captionof{figure}{Tikimasis rezultatas \textbf{GTK311 0} (ne pilnas numeris).}
+\end{subfigure}
+
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{train_images/0_truncated2.png}
+  \captionof{figure}{Tikimasis rezultatas \textbf{ABN046 0} (ne pilnas numeris).}
+\end{subfigure}
+
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{train_images/0_not_present.png}
+  \captionof{figure}{Tikimasis rezultatas \textbf{KLF155 0} (nėra numerio).}
+\end{subfigure}
+\captionof{figure}{Sugeneruotų paveikslėlių pavyzdžiai}
+\label{img_ex}
+\end{figure}
+Pirmoji paveikslėlio rezultato dalis nurodo, koks yra teisingas numeris. Antroji - numerio rėmelio egzistavimas paveikslėlyje.
+Jei reikšmė 1 - numeris yra tinkamas nuskaitymui, 0 - neatitinka kriterijų (\ref{img_ex} pav.). 
+
+Kriterijai, kurie nusako ar numerio rėmelis yra tinkamas apdorojimui:
+
+\begin{itemize}[itemsep=0.5pt]
+  \item Visas rėmelio plotas yra paveikslėlyje.
+  \item Rėmelio plotis yra mažesnis nei 80\% paveikslėlio pločio.
+  \item Rėmėlio aukštis yra mažesnis nei 87,5\% paveikslėlio aukščio.
+  \item Rėmelio plotis yra didesnis nei 60\% paveikslėlio pločio.
+  \item Rėmėlio aukštis yra didesnis nei 60\% paveikslėlio aukščio.
+\end{itemize}
+
+Su tokiais parametrais galima naudoti judantį 128x64 pikselių langelį, kuris judėtų po 8 pikselius ir kas kartą padidintų rėmelį
+\begin{math}
+  \sqrt{2}
+\end{math}
+kartų. Tokiu būdu užtikrinama, kad nebus praleista nei viena paveikslėlio vieta, o taip pat pakankamai efektyviai ir greitai pereinamas
+visas paveikslėlis.
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=10cm]{train_images/generating.png}
+  \captionof{figure}{Paveikslėlių generavimo schema}
+  \label{gen_img}
+\end{minipage}
+
+\subsubsubsection{Numerio generavimas}
+Numeris ir rėmelio spalva generuojama atsitiktinai, tačiau tekstas turi būti tamsesnis negu rėmelis. Tokiu būdu bandoma atkurti realaus pasaulio apšvietimo variacijas.
+Numeris generuojamas pagal Lietuvos Respublikos Valstybinių numerių formatą, kuris yra - 3 lotyniško alfabeto
+raidės (išskyrus lietuvių kalboje nenaudojamas raides) ir 3 arabiški skaičiai. Generuojant numerį, 
+atsitiktine tvarka parenkamos trys raidės iš 23 raidžių žodyno \textit{ABCDEFGHIJKLMNOPRSTUVYZ} bei 3 skaičiai 
+iš skaičių žodyno \textit{0123456789}. Maksimalus galimas unikalių numerių skaičius siekia:
+\begin{equation*}
+  23^3 * 10^3 = 12.167.000.
+\end{equation*}
+
+\subsubsubsection{Transformacija}
+
+Norint, kad tinklas efektyviai mokytųsi ir atpažintų paveikslėlius realaus pasaulio sąlygomis, generuojant duomenų
+rinkinį buvo pritaikyta remėlio transformacija. Tai atlikti buvo pasitelktas metodas generuoti atsitiktines
+reikšmes X, Y, Z ašims ir pritaikyti Oilerio kampų metodą\cite{slabaugh1999computing}. 
+Reikšmių rėžiai pasirinkti tokie, kuriuos labiausiai tikėtina sutikti realiame pasaulyje.
+Kaip atrodo transformacija galima matyti \ref{gen_img} paveikslėlyje.
+Ašių atsitiktinių reikšmių rėžiai:
+\begin{equation*}
+  -0.3 \leq X \leq 0.3,
+\end{equation*}
+\begin{equation*}
+  -0.2 \leq Y \leq 0.2,
+\end{equation*}
+\begin{equation*}
+  -1.2 \leq Z \leq 1.2.
+\end{equation*}
+
+Transformacijos vykdomos 3 etapais (programinis kodas matomas \ref{euler_img} pav.):
+\begin{enumerate}[itemsep=0.5pt]
+  \item Sukama aplink Y ašį:
+  \begin{itemize}[itemsep=0.5pt]
+    \item Apskaičiuojamos cos(Y) ir sin(y) reikšmės,
+    \item Sudaroma 3x3 matrica su reikšmėmis,
+    \begin{equation*}
+      \begin{bmatrix}
+        c & 0 & s \\
+        0 & 1 & 0 \\
+        -s & 0 & c
+      \end{bmatrix}
+      .
+    \end{equation*}
+  \end{itemize}
+  \item Sukama aplink X ašį
+  \begin{itemize}[itemsep=0.5pt]
+    \item Apskaičiuojamos cos(X) ir sin(X) reikšmės,
+    \item Sudaroma 3x3 matrica su reikšmėmis,
+    \begin{equation*}
+      \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & c & -s \\
+        0 & s & c
+      \end{bmatrix}
+      .
+    \end{equation*}
+    \item Sudauginama su praeitame žingsnyje gauta matrica
+  \end{itemize}
+  \item Sukama aplink Z ašį
+  \begin{itemize}[itemsep=0.5pt]
+    \item Apskaičiuojamos cos(Z) ir sin(Z) reikšmės,
+    \item Sudaroma 3x3 matrica su reikšmėmis, 
+    \begin{equation*}
+      \begin{bmatrix}
+        c & 0 & s \\
+        0 & 1 & 0 \\
+        -s & 0 & c
+      \end{bmatrix}
+      ,
+    \end{equation*}
+    \item Sudauginama su praeitame žingsnyje gauta matrica.
+  \end{itemize}
+\end{enumerate}
+
+\begin{minipage}{\linewidth}
+  \includegraphics[width=8cm]{euler.png}
+  \captionof{figure}{Oilerio kampų metodo kodas}
+  \label{euler_img}
+\end{minipage}
+
+\subsubsubsection{Kompozicija}
+Turėti realų foną svarbu, kadangi tinklas turi išmokti surasti rėmelio kampus „nesukčiaudamas“. 
+Naudojant juodą foną, tinklas gali daryti prielaidą, kad remėlis yra ten, kur nėra juodos spalvos, o tai būtų netikslu realiame pasaulyje.
+Transformuotas automobilio numerio rėmelis sukomponuojamas su atsitiktiniu paveikslėliu atsitiktinėje vietoje.
+Atsitiktinių paveikslėlių šaltiniu naudojamas daugiau nei 100.000 paveikslėlių duomenų rinkinys \cite{xiao2010sun}.
+Labai svarbu didelis kiekis paveikslėlių, taip sumažinant riziką, kad neuroninis tinklas atsimins kiekvieną paveikslėlį.
+Kaip atrodo kompozicija galima matyti \ref{gen_img} paveikslėlyje.
+\begin{equation*}
+  A = 0.6,
+\end{equation*}
+\begin{equation*}
+  B = 0.875,
+\end{equation*}
+\begin{equation*}
+  C = 1.5.
+\end{equation*}
+kur:
+\begin{itemize}[itemsep=0.5pt]
+  \item A - minimalus numerio rėmelio plotis,
+  \item B - maksimalus numerio rėmelio aukštis,
+  \item C - dydžio variacijos koeficientas.
+\end{itemize}
+\begin{equation*}
+  min = (A + B) * 0.5 - (B - A) * 0.5 * C,
+\end{equation*}
+\begin{equation*}
+  min = ((0.6 + 0.875) * 0.5) - ((0.875 - 0.6) * 0.5 * 1.5),
+\end{equation*}
+\begin{equation*}
+  min = (1.475 * 0.5) - (0.275 * 0.5 * 1.5),
+\end{equation*}
+\begin{equation*}
+  min = 0.7375 - 0.20625,
+\end{equation*}
+\begin{equation*}
+  \textbf{min = 0.53125},
+\end{equation*}
+\begin{equation*}
+  max = (A + B) * 0.5 + (B - A) * 0.5 * C,
+\end{equation*}
+\begin{equation*}
+  max = ((0.6 + 0.875) * 0.5) + ((0.875 - 0.6) * 0.5 * 1.5),
+\end{equation*}
+\begin{equation*}
+  max = (1.475 * 0.5) + (0.275 * 0.5 * 1.5),
+\end{equation*}
+\begin{equation*}
+  max = 0.7375 + 0.20625,
+\end{equation*}
+\begin{equation*}
+  \textbf{max = 0.94375},
+\end{equation*}
+\begin{equation*}
+  x = R[min, max],
+\end{equation*}
+\begin{equation*}
+  p = 1, \text{kai } x \in [A, B],
+\end{equation*}
+\begin{equation*}
+  p = 0, \text{kai } x \in [A, B].
+\end{equation*}
+kur:
+\begin{itemize}[itemsep=0.5pt]
+  \item min - minimalus generuojamas dydžio koeficientas,
+  \item max - maksimalus generuojamas dydžio koeficientas,
+  \item R - atsitiktinio skaičiaus generavimo funkcija tarp dviejų reikšmių,
+  \item x - numerio rėmelio dydžio koeficientas lyginant su pradiniu dydžiu,
+  \item p - jei 1 - rėmelis tinkamai egzistuoja paveikslėlyje, 0 - rėmelis neegzistuoja arba yra netinkamas.
+\end{itemize}
+
+Atsitiktinių reikšmių rėžis, kuris nusako kurioje vietoje turėtų atsidurti rėmelis.
+
+\subsubsubsection{Triukšmo pridėjimas}
+Triukšmas paveikslėlyje reikalingas, kadangi realiame pasaulyje pasitaiko, kad kameros sensorius generuoja triukšmus, o taip pat,
+kad neuroninis tinklas nepersimokytų ir neskirstytų paveikslėlių pagal vieną konkrečią spalvą ar būtų priklausomas nuo „aštrių“ kampų.
+Triukšmas paveikslėliui pridedamas pritaikant Gauso normalųjį skirstinį su reikšme 0.05.
+Kaip atrodo triukšmo pridėjimas galima matyti \ref{gen_img} paveikslėlyje.
+
+\subsubsection{Duomenų generavimo patobulinimai}
+--TODO
+1h
+kas patobulinta remeliams
+kaip pasikeite statistika
+
+
+\subsection{Numerio atpažinimui skirtų duomenų generavimas}
+--TODO
+aprašymas 10min
+
+\subsubsection{Idėja}
+Norint kuo efektyviau apmokyti LSTM rekurentinį neuroninį tinklą, reikia sugeneruoti tokio pačio šrifto atsitiktinius numerius, kurie kuo panašiau atkurtų realią situaciją. 
+Idėja buvo susirinkti visas galimas raides ir skaičius iš realių automobilių nuotraukų. Atrinktus simbolius išsikirpti bei sugeneruoti atsitiktinius raidžių ir skaičių kratinius.
+
+\subsubsection{Simbolių rinkimas}
+Realių automobilių numerių nuotraukų paieška buvo vykdoma http://autoplius.lt puslapyje.
+Norint iškirpti kokybiškas raides bei skaičius reikia aukštos kokybės nuotraukų. 
+Atrinkus tinkamas nuotraukas, buvo iškirptos visos galimos raidės ir skaičiai (\ref{symbols} pav.).
+Kai kuriems simboliams reikėjo pritaikyti transformacijas, kad jų orientacija būtų horizontaliai tiesi.
+
+\begin{minipage}{\linewidth}
+  \includegraphics[width=8cm]{symbols.jpg}
+  \captionof{figure}{Atrinktos raidės ir skaičiai}
+  \label{symbols}
+\end{minipage}
+
+\subsubsection{Generavimo algoritmas}
+Generuoti atsitiktiniams automobilio numeriams parašyta Python programėlė.
+Veikimo eiga:
+\begin{itemize}
+  \item Masyve \textit{letters} saugomi paveikslėliai atitinkantys raides.
+  \item Masyve \textit{numbers} saugomi paveikslėliai atitinkantys skaičius.
+  \item Sukamas ciklas \textit{N} kartų.
+  \item Kiekvieno iteracijos metu atsitiktiniu būdu atrenkamos trys raidės ir trys skaičiai iš atitinkamo masyvo.
+  \item Sukuriamas naujas masyvas, kuriame iš eilės sudedami atrinkti paveikslėliai.
+  \item Surandamas mažiausias paveikslėlis iš atrinktų, ir pagal jo dydį sumažinamas likusių paveikslėlių aukštis proporcingai.
+  \item Sujungiamas vienas paveikslėlis iš atrinktų simbolių.
+  \item Paveikslėlis išsaugomas \textit{xxxyyy.tif} formatu, kur x - raidė, y - skaičius.
+  \item Šalia išsaugomas tekstinė rinkmena \textit{xxxyyy.gt.txt}, kur x - raidė, y - skaičius, kurio viduje yra XXXYYY formatu išsaugotas sugeneruotas numeris.
+\end{itemize}
+
+
+\pagebreak
+\section{Neuroninių tinklų architektūra}
+--TODO
+aprašymas 10min
+
+
+\subsection{Numerio rėmėlio atpažinimui skirtas neuroninis tinklas}
+--TODO
+aprašymas 10min
+
+\subsubsection{Modelis}
+Neuroninis tinklas kurtas su Tensorflow bibliotekomis.
+Kuriant dirbtinį konvoliucinį neuroninį tinklą buvo pasirinkta architektūra pavaizuota \ref{fig:test} pav.
+Iš viso yra 3 konvoliuciniai lygiai, kurių dydžiai yra 48, 64 ir 128\cite{goodfellow2013multi}.
+Visų jų langelio dydis yra vienodas - 5x5.
+Taip pat yra 3 max pool'ingo lygmenys, kurių pirmo ir trečio langelio dydis yra 2x2, o antro - 1x2.
+Tada neuroninis tinklas turi du pilnai sujungtus lygius, kurių pirmojo dydis - 2048, o antrojo (klasifikatoriaus) - 1.
+Po pirmojo konvoliucinio lygio pritaikyta neuronų atmetimo operacija, norint nepermokyti tinklo pirminėje stadijoje.
+Po trečiojo konvoliucinio lygio taip pat pritaikyta neuronų atmetimo operacija, norint padidinti neuroninio tinklo tikslumą, 
+kadangi pastebėta, kad ignoruojant 50\% neuronų, tinklas turi didesnį atpažinimo tikslumą\cite{stark2015captcha}.
+Kiekvieno mokymo ciklo metu imties dydis yra 50. Galutinis tinklo išvedamas rezultatas yra:
+\begin{equation*}
+  0 \leq x \leq 1, x \in N.
+\end{equation*}
+
+Neuroninį tinklą sudaro:
+
+\begin{itemize}[itemsep=0.5pt]
+  \item 3 konvoliuciniai lygiai:
+    \begin{enumerate}[itemsep=0.5pt]
+      \item Konvoliucinis lygis - 48 filtrų, langelio dydis 5x5, įeinančio paveikslėlio dimensijos 128x64x3, išeinančio paveikslėlio dimensijos 128x64x48.
+      \item Konvoliucinis lygis - 64 filtrų, langelio dydis 5x5, įeinančio paveikslėlio dimensijos 64x32x48, išeinančio paveikslėlio dimensijos 64x32x64.
+      \item Konvoliucinis lygis - 128 filtrų, langelio dydis 5x5, įeinančio paveikslėlio dimensijos 64x16x64, išeinančio paveikslėlio dimensijos 64x16x128.
+    \end{enumerate}
+  \item 3 max pool'ingo lygiai:
+    \begin{enumerate}[itemsep=0.5pt]
+      \item Max pool'ingo lygis - langelio dydis 2x2, įeinančio paveikslėlio dimensijos 128x64x48, išeinančio paveikslėlio dimensijos 64x32x48.
+      \item Max pool'ingo lygis - langelio dydis 1x2, įeinančio paveikslėlio dimensijos 64x32x64, išeinančio paveikslėlio dimensijos 64x16x64.
+      \item Max pool'ingo lygis - langelio dydis 2x2, įeinančio paveikslėlio dimensijos 64x16x128, išeinančio paveikslėlio dimensijos 32x8x128.
+    \end{enumerate}
+  \item 2 pilnai sujungti lygiai:
+    \begin{enumerate}[itemsep=0.5pt]
+      \item Pilnai sujungtas lygis - įeinančio paveikslėlio dimensijos 32x8x128, išeinančių signalų kiekis - 2048.
+      \item Pilnai sujungtas lygis - įeinančių signalų kiekis - 2048, išeinančių signalų kiekis - 1.
+    \end{enumerate}
+\end{itemize}
+
+
+\begin{minipage}{\linewidth}
+  \includegraphics[width=12cm]{topology.png}
+  \captionof{figure}{Neuroninio tinklo architektūra}
+  \label{fig:test}
+\end{minipage}
+
+\subsection{Numerio simbolių atpažinimui skirtas neuroninis tinklas}
+Tesseract programa nuo 4.00 versijos integravo naują neuroninio tinklo pagrindu veikiančią teksto eilučių atpažinimo posistemę.
+Pirminis idėjos šaltinis kilo iš \textit{OCRopus} sistemos, kuri panaudodama Python programavimo kalbą įgyvendino LSTM veikimą.
+Tačiau tai buvo visiškai perdaryta panaudojus C++ kalbos ypatumus.
+Neuroninio tinklo sistema Tesseract programoje egzistuoja jau nuo \textit{TensorFlow} atsiradimo ir taip pat su ja yra suderinama,
+kadangi naudojama tos pačios sintaksės neuroninio tinklo modelio aprašymo kalbą (VGSL).
+
+Pagrindinė VGSL idėja yra, kad nebūtina išmokti daug naujų dalykų, kad būtų įmanoma sukurti ir apkomyti neuroninį tinklą.
+Nereikia mokytis \textit{Python} programavimo kalbos, \textit{TensorFlow} bibliotekos ar net rašyti C++ programinio kodo.
+Užtenka įvaldyti VGSL kalbos sintaksines ypatybes, kad būtų įmanoma taisyklingai sudaryti neuroninį tinklą.
+
+\subsubsection{Integracija su Tesseract}
+Integruota neuroninio tinklo posistemė gali būti panaudojama kaip papildinys esamai analizės sistemai atpažįstant tekstą dideliame dokumente arba
+gali būti naudojama kartu su išoriniu teksto detektoriumi, kad atpažintų tekstą iš vienos teksto eilutės atvaizdo.
+
+Nuo 4.00 versijos neuronio tinklo pagrindu veikiantis atpažinimo būdas Tesseract programoje yra numatytasis. 
+
+\subsubsection{Sisteminiai reikalavimai}
+Nauja programos versija naudoja iki 10 kartų daugiau kompiuterio procesoriaus resursų nei senesnės Tesseract versijos, 
+tačiau jei naudojamas kompiuteris ir platforma palaiko žemiau aprašytas funkcijas, resursų naudojimas gali sumažėti:
+
+\begin{itemize}
+  \item \textit{OpenMP} leidžia naudoti iki 4 procesoriaus branduolių vienu metu, jei juos procesorius turi.
+  \item \textit{Intel/AMD} procesoriai, kurie palaiko \textit{SSE} ir/ar \textit{AVX} technologiją, turi pranašumą naudojant \textit{SIMD} branduolio matricų daugybos operacijų išlygiagretinimą.
+  \item Kompiuteryje, kuris turi bent 4 branduolius, \textit{AVX}, nesudėtingą anglų kalbos tekstą paveikslėlyje, atpažinimas užtrunka dvigubai ilgiau bei naudoja 7 kartus daugiau procesoriaus resursų nei ankstesnės versijos, nors Hindi kalbos atpažinimas trunka netgi greičiau nei senesnėse versijose bei naudoja tik nežymiai daugiau procesoriaus resursų.
+\end{itemize}
+
+Jei šių paminėtų komponentų nėra sistemoje, egzistuoja lėtesnė C++ kalbos implementacija, kuri vis dėlto sugeba atlikti paskirtą darbą.
+
+\subsubsection{Įgyvendinimo pagrindai}
+Visi neuroninio tinklo lygių tipai yra paveldėti iš bazinės \textit{Network} klasės.
+\textit{Plumbing} subklasė yra bazinė kitų tinklo lygių, kurie įvairiomis operacijomis (grupuojant keletą lygių; keičiant įvestį ir išvestį) manipuliuoja kitais lygiais, klasė.
+
+\subsubsection{Naujo tinklo lygio pridėjimas}
+Naujas tinklo lygis turi būti paveldimas iš klasės \textit{Network} ar \textit{Plumbing} ir įgyvendinti bent vieną virtualų metodą:
+
+\begin{itemize}
+  \item \textit{spec}, kuris grąžina \textit{String} tipo eilutę, kuri buvo naudojama sukurtį šiam tinklo lygiui.
+  \item \textit{Serialize/DeSerialize} - skirtas išsaugoti/atkurti tinklo lygį iš/į failą.
+  \item \textit{Forward} - skirtas treniravimo metu vykdyti tinklo lygį nurodant kryptį į priekį.
+  \item \textit{Backward} - skirtas treniravimo metu vykdyti tinklo lygį nurodant kryptį atgal.
+\end{itemize}
+
+Lygiai, kurie turi svorius taip pat turi įgyvendinti \textit{Update} metodą, kuris atnaujina svorius naudodamas rinkinį nuolydžių.
+Taip pat yra keletas kitų metodų, kurie turėtų būti įgyvendinti, priklausomai nuo specifinių tinklo lygio reikalavimų:
+
+\begin{itemize}
+  \item \textit{NetworkBuilder} klasė turi būti pakeista, kad būtų galima apdoroti naujo tipo specifikaciją.
+  \item \textit{NetworkType} klasifikatorius turi būti papildytas nauju tipu.
+  \item Naujo tipo atitinkamas įrašas turi būti pridėtas į lauką \textit{Network::kTypeNames}.
+  \item \textit{Network::CreateFromFile} metodas turi būti modifikuotas, kad galėtų būti deserializuotas naujo tinklo lygio tipas.
+  \item Kaip ir su kiekvienu nauju kodu, \textit{lstm/Makefile.am} failas turi būti papildytas naujais failų pavadinimais. 
+\end{itemize}
+
+\subsubsection{Modelis}
+--TODO
+aprašymas 10min
+
+\subsubsubsection{VGSL specifikacijos}
+
+VGSL Specs - rapid prototyping of mixed conv/LSTM networks for images
+Variable-size Graph Specification Language (VGSL) enables the specification of a neural network, composed of convolutions and LSTMs, 
+that can process variable-sized images, from a very short definition string.
+
+\sectionnonumnocontent{Applications: What is VGSL Specs good for?}
+
+VGSL Specs are designed specifically to create networks for:
+
+Variable size images as the input. (In one or BOTH dimensions!)
+Output an image (heat map), sequence (like text), or a category.
+Convolutions and LSTMs are the main computing component.
+Fixed-size images are OK too!
+
+\textbf{Model string input and output}
+
+A neural network model is described by a string that describes the input spec, the output spec and the layers spec in between. Example:
+
+\begin{verbatim}
+  [1,0,0,3 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]
+\end{verbatim}
+
+The first 4 numbers specify the size and type of the input, and follow the TensorFlow convention for an image tensor: [batch, height, width, depth]. 
+Batch is currently ignored, but eventually may be used to indicate a training mini-batch size. Height and/or width may be zero, allowing them to be variable. 
+A non-zero value for height and/or width means that all input images are expected to be of that size, and will be bent to fit if needed. 
+Depth needs to be 1 for greyscale and 3 for color. As a special case, a different value of depth, and a height of 1 causes the image to 
+be treated from input as a sequence of vertical pixel strips. NOTE THAT THROUGHOUT, x and y are REVERSED from conventional mathematics, 
+to use the same convention as TensorFlow. The reason TF adopts this convention is to eliminate the need to transpose images on input, 
+since adjacent memory locations in images increase x and then y, while adjacent memory locations in tensors in TF, and NetworkIO in 
+tesseract increase the rightmost index first, then the next-left and so-on, like C arrays.
+
+The last "word" is the output specification and takes the form:
+
+O(2|1|0)(l|s|c)n output layer with n classes.
+  2 (heatmap) Output is a 2-d vector map of the input (possibly at
+    different scale). (Not yet supported.)
+  1 (sequence) Output is a 1-d sequence of vector values.
+  0 (category) Output is a 0-d single vector value.
+  l uses a logistic non-linearity on the output, allowing multiple
+    hot elements in any output vector value. (Not yet supported.)
+  s uses a softmax non-linearity, with one-hot output in each value.
+  c uses a softmax with CTC. Can only be used with s (sequence).
+  NOTE Only O1s and O1c are currently supported.
+The number of classes is ignored (only there for compatibility with TensorFlow) as the actual number is taken from the unicharset.
+
+\subsubsubsection{Syntax of the Layers in between}
+
+NOTE that all ops input and output the standard TF convention of a 4-d tensor: [batch, height, width, depth] regardless of any collapsing of dimensions. 
+This greatly simplifies things, and allows the VGSLSpecs class to track changes to the values of widths and heights, so they can be correctly passed in 
+to LSTM operations, and used by any downstream CTC operation.
+
+NOTE: in the descriptions below, <d> is a numeric value, and literals are described using regular expression syntax.
+
+NOTE: Whitespace is allowed between ops.
+
+\textbf{Functional ops}
+
+C(s|t|r|l|m)<y>,<x>,<d> Convolves using a y,x window, with no shrinkage,
+  random infill, d outputs, with s|t|r|l|m non-linear layer.
+F(s|t|r|l|m)<d> Fully-connected with s|t|r|l|m non-linearity and d outputs.
+  Reduces height, width to 1. Connects to every y,x,depth position of the input,
+  reducing height, width to 1, producing a single <d> vector as the output.
+  Input height and width *must* be constant.
+  For a sliding-window linear or non-linear map that connects just to the
+  input depth, and leaves the input image size as-is, use a 1x1 convolution
+  eg. Cr1,1,64 instead of Fr64.
+L(f|r|b)(x|y)[s]<n> LSTM cell with n outputs.
+  The LSTM must have one of:
+    f runs the LSTM forward only.
+    r runs the LSTM reversed only.
+    b runs the LSTM bidirectionally.
+  It will operate on either the x- or y-dimension, treating the other dimension
+  independently (as if part of the batch).
+  s (optional) summarizes the output in the requested dimension, outputting
+    only the final step, collapsing the dimension to a single element.
+LS<n> Forward-only LSTM cell in the x-direction, with built-in Softmax.
+LE<n> Forward-only LSTM cell in the x-direction, with built-in softmax,
+  with binary Encoding.
+In the above, (s|t|r|l|m) specifies the type of the non-linearity:
+
+s = sigmoid
+t = tanh
+r = relu
+l = linear (i.e., No non-linearity)
+m = softmax
+Examples:
+
+Cr5,5,32 Runs a 5x5 Relu convolution with 32 depth/number of filters.
+
+Lfx128 runs a forward-only LSTM, in the x-dimension with 128 outputs, treating the y dimension independently.
+
+Lfys64 runs a forward-only LSTM in the y-dimension with 64 outputs, treating the x-dimension independently and collapses the y-dimension to 1 element.
+
+\textbf{Plumbing ops}
+
+The plumbing ops allow the construction of arbitrarily complex graphs. Something currently missing is the ability to define 
+macros for generating say an inception unit in multiple places.
+
+[...] Execute ... networks in series (layers).
+(...) Execute ... networks in parallel, with their output concatenated in depth.
+S<y>,<x> Rescale 2-D input by shrink factor y,x, rearranging the data by
+  increasing the depth of the input by factor xy.
+  **NOTE** that the TF implementation of VGSLSpecs has a different S that is
+  not yet implemented in Tesseract.
+Mp<y>,<x> Maxpool the input, reducing each (y,x) rectangle to a single value.
+
+\textbf{Full Example: A 1-D LSTM capable of high quality OCR}
+
+\begin{verbatim}
+  [1,1,0,48 Lbx256 O1c105]
+\end{verbatim}
+
+As layer descriptions: (Input layer is at the bottom, output at the top.)
+
+O1c105: Output layer produces 1-d (sequence) output, trained with CTC,
+  outputting 105 classes.
+Lbx256: Bi-directional LSTM in x with 256 outputs
+1,1,0,48: Input is a batch of 1 image of height 48 pixels in greyscale, treated
+  as a 1-dimensional sequence of vertical pixel strips.
+[]: The network is always expressed as a series of layers.
+This network works well for OCR, as long as the input image is carefully normalized in the vertical direction, with the baseline and meanline in constant places.
+
+\textbf{Full Example: A multi-layer LSTM capable of high quality OCR}
+
+\begin{verbatim}
+  [1,0,0,1 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]
+\end{verbatim}
+
+As layer descriptions: (Input layer is at the bottom, output at the top.)
+
+O1c105: Output layer produces 1-d (sequence) output, trained with CTC,
+  outputting 105 classes.
+Lfx256: Forward-only LSTM in x with 256 outputs
+Lrx128: Reverse-only LSTM in x with 128 outputs
+Lfx128: Forward-only LSTM in x with 128 outputs
+Lfys64: Dimension-summarizing LSTM, summarizing the y-dimension with 64 outputs
+Mp3,3: 3 x 3 Maxpool
+Ct5,5,16: 5 x 5 Convolution with 16 outputs and tanh non-linearity
+1,0,0,1: Input is a batch of 1 image of variable size in greyscale
+[]: The network is always expressed as a series of layers.
+The summarizing LSTM makes this network more resilient to vertical variation in position of the text.
+
+\subsubsubsection{Variable size inputs and summarizing LSTM}
+
+NOTE that currently the only way of collapsing a dimension of unknown size to known size (1) is through the use of a summarizing LSTM. 
+A single summarizing LSTM will collapse one dimension (x or y), leaving a 1-d sequence. The 1-d sequence can then be collapsed in the 
+other dimension to make a 0-d categorical (softmax) or embedding (logistic) output.
+
+For OCR purposes then, the height of the input images must either be fixed, and scaled (using Mp or S) vertically to 1 by the top layer, 
+or to allow variable-height images, a summarizing LSTM must be used to collapse the vertical dimension to a single value. 
+The summarizing LSTM can also be used with a fixed height input.
+
+\subsubsubsection{Programos įgyvendinimui panaudotas modelis}
+--net_spec "[1,36,0,1 Ct3,3,16 Mp3,3 Lfys48 Lfx96 Lrx96 Lfx256 O1c`head -n1 data/unicharset`]" 
+--learning_rate 20e-4 
+--max_iterations 100000
+
+\pagebreak
+\section{Neuroninių tinklų apmokymas}
+--TODO
+aprašymas 10min
+
+\subsection{Konvoliucinio neuroninio tinklo mokymas}
+Apmokymui buvo naudoti 100.000 paveikslėlių, iš kurių 75.000 sudarė mokymo duomenys, o 25.000 testavimo duomenys.
+Vienoje iteracijoje buvo apmokoma po 50 paveikslėlių. Kas 20 iteracijų išvedami statistiniai duomenys. Kaip matome \ref{statistika} paveikslėlyje,
+mokymosi proceso metu tikslumas priartėjo prie 100\% bei pasiekė vidutinį 98\% tikslumą mokymo pabaigoje.
+
+\begin{minipage}{\linewidth}
+  \includegraphics[width=14cm]{statistika.png}
+  \captionof{figure}{Loss funkcijos ir tikslumo statistika mokymosi procese}
+  \label{statistika}
+\end{minipage}
+
+Apmokymas buvo vykdomas su ASUS GeForce GTX 1070 8GB vaizdo plokšte. Apmokyti 100.000 paveikslėlių truko apytiksliai 4h. Vidutiniškai viena iteracija truko apytiksliai 7.2s (\ref{mokymas} pav.).
+Paveikslėlių generavimas buvo vykdomas tuo pačiu metu naudojantis CPU.
+
+\begin{minipage}{\linewidth}
+  \includegraphics[width=12cm]{mokymas.png}
+  \captionof{figure}{Neuroninio tinklo mokymo greitis}
+  \label{mokymas}
+\end{minipage}
+
+
+\subsection{LSTM rekurentinio neuroninio tinklo mokymas}
+
+Tesseract 4.00 versijoje pridėtas naujas atpažinimo variklis, kuris remiasi LSTM tipo rekurentiniu neuroniniu tinklu.
+Lyginant su ankstesnėmis versijomis, ženkliai padidėjo dokumentų tipo nuotraukų teksto atpažinimas, tačiau tai reikalauja 
+ženkliai didesnių kompiuterio skaičiavimo resursų. Atpažįstant sudėtingas kalbas, yra didelė tikimybė, kad atpažinimas truks 
+greičiau nei bazinė pirminė Tesseract versija.
+
+Naudojant neuroninius tinklus teksto atpažinimui yra reikalinga žymiai daugiau duomenų modelio treniravimui, taip pat pats 
+treniravimas trunka ilgiau nei pirminėje Tesseract versijoje. Visoms lotynų rašmenimis pagrįstoms kalboms treniravimas vyko naudojant daugiau
+nei 400.000 teksto eilučių bei apie 4.500 skirtingų šriftų. Su nauja versija ženkliai išaugo mokymosi laikas. Jei su ankstesne versija mokymas
+trukdavo nuo kelių minučių iki kelių valandų, tai su nauja 4.00 versija tai gali trukti nuo kelių dienų iki kelių savaičių.
+Tačiau ne visais atvejais yra naudinga treniruoti modelį nuo pradžių, priklausomai nuo situacijos, kartais užtenka pertreniruoti egzistuojantį modelį.
+
+Išskiriami trys pagrindiniai modelio apmokymo principai:
+\begin{itemize}
+  \item Esamo modelio patobulinimas. Naudojant egzistuojantį pasirinktos kalbos modelį, papildomai apmokomas su papildomais specifiniais duomenimis.
+  Tai gali išspręsti problemas, kai norimas rezultatas nedaug skiriasi nuo jau apmokyto modelio, pvz.: truputį nestandartinis šriftas.
+  Gali veikti su sąlyginai mažu naujų duomenų kiekiu.
+  \item Nuimti viršutinį (ar keletą daugiau) modelio sluoksnių ir pertreniruoti naujus sluoksnius su naujais duomenimis.
+  Jei esamo modelio patobulinimas nesprendžia esamos problemos, šis būdas dažniausiai būna kitas pasirinkimas.
+  Viršutinio sluoksnio permokymas vis dar gali veikti treniruojant visiškai naują kalbą, tačiau tos kalbos turi būti labai panašios, kad būtų pasiektas norimas efektas.
+  \item Apmokymas nuo nulio. Tai gali būti labai sunki užduotis, jei nėra pakankamai daug reprezentatyvių duomenų spręsti konkrečiai problemai.
+  Jei duomenų nėra pakankamai daug, galiausiai tinklas bus permokytas, kuris puikiai susidoros tik su mokymo duomenimis, tačiau visiškai neatliks savo užduoties,
+  kai bus paduodami realūs duomenys. Nors mokymas atrodo skiriasi, matys treniravimo žingsniai yra beveik identiški aukščiau aprašytiems, taigi tai yra visai paprasta
+  išbandyti, atsižvelgiant į turimų duomenų bei kompiuterio resursų kiekį.
+\end{itemize}
+
+\subsubsection{Atpažinimo kokybės gerinimas}
+Egzistuoja įvairiausių priežasčių, kodėl Tesseract atpažinimo programa nesugeba atpažinti jai paduoto teksto.
+Svarbu pabrėžti, kad Tesseract modelio permokymas retai padės, nebent naudojamas labai nestandartinis šriftas arba nauja dar netreniruota ir neapmokyta kalba.
+
+\subsubsubsection{Paveikslėlio apdorojimas}
+Pati Tesseract sistema savyje atlieka įvairius paveikslėlių apdorojimo veiksmus, pasinaudojant Leptonica\footnote{Leptonica - --TODO} biblioteka, prieš pradedant pati teksto atpažinimą.
+Dažniausiai Tesseract puikiai susitvarko su šita užduotimi, tačiau neišvengiamai atsiranda situacijų, su kuriuomis automatiškai susidoroti nepavyksta ir dėl to pastebimai nukenčia
+atpažinimo tikslumas.
+
+Jei norima pamatyti, kaip Tesseract apdorojo paveiksliuką, tai galima atlikti pakeitus konfigūracinio parametro \textit{tessedtessedit\textunderscore write\textunderscore images} reikšmę į \textbf{true}
+kai yra leidžiama Tesseract programa. Jei paruoštas tinklo apmokymui paveikslėlis atrodo problematiškai, neišvengiamai reikės pritaikyti viena ar daugiau paveikslėlių apdorojimo technikų
+prieš siunčiant apdorojimui.
+
+\sectionnonumnocontent{Spalvų inversija}
+Nors senesnės Tesseract versijos (<= 3.05) palaikė šviesų tekstą ant juodo fono be jokių problemų, nuo 4.00 versijos būtina sąlyga, kad tekstas būtų juodas, o fonas šviesus.
+Tam tikslui atlikti užtenka vienos komandos:
+\begin{verbatim}
+  numpy.invert(image)
+\end{verbatim}
+
+\sectionnonumnocontent{Dydžio keitimas}
+Tesseract programa geriausiai veikia, kai paduodamų paveikslėlių taškų viename colyje (angl. DPI) dydis yra bent 300, todėl labai svarbu užtikrinti, kad dydis nebūtų mažesnis.
+
+Atliktas eksperimentas\footnote{\textit{Willus Dotkom} vartotojo atliktas eksperimentas. Šaltinis https://groups.google.com/forum/\#!msg/tesseract-ocr/Wdh\_JJwnw94/24JHDYQbBQAJ}
+(žiūrėti \ref{tess4_error_rate} pav.) parodė, kad egzistuoja optimalus raidžių aukštis, kuriam esant klaidų tikimybė mažėja iki 0. Raidžių aukščiui esant tarp 30 ir 33 pikselių, klaidų tikimybė visiškai sumažėja,
+todėl galima daryti prielaidą, kad labai svarbu pasirinkti tinkamą šrifto dydį ruošiant mokymo duomenis, norint pasiekti geriausių rezultatų.
+
+\begin{minipage}{\linewidth}
+  \includegraphics[width=12cm]{tess4_error_rate.png}
+  \captionof{figure}{Klaidų kiekio priklausomybė nuo raidžių aukščio}
+  \label{tess4_error_rate}
+\end{minipage}
+\sectionnonumnocontent{Binarizacija}
+Binarizacija - tai paveiksliuko spalvų keitimas į juodą ir baltą. Tesseract jau turi integruotą funkcionalumą atlikti šiai užduočiai (naudojamas \textit{Otsu} algoritmas),
+tačiau ne visada rezultatas gaunasi optimalus. Tai dažniausiai lemia netolygus fono tamsumas.
+
+Jei nepavyksta išgauti geresnės kokybės nuotraukos, kuriame fono spalva būtų tolygi, yra alternatyvių ribinių verčių nustatymo algoritmų, kuriuos vertėtų išbandyti:
+\begin{itemize}
+  \item \textit{ImageJ} automatinis ribinių verčių nustatymo algoritmas (JAVA programavimo kalba).
+  \item \textit{OpenCV} ribinių verčių nustatymo algoritmas (Python programavimo kalba).
+  \item \textit{scikit-image} ribinių verčių nustatymo algoritmas (Python programavimo kalba).
+\end{itemize}
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=10cm]{binarisation.png}
+  \captionof{figure}{Binarizacijos algoritmo taikymo rezultatas}
+  \label{binarisation}
+\end{minipage}
+
+\sectionnonumnocontent{Triukšmo pašalinimas}
+Triukšmas - tai atsitiktinis netolygaus ryškumo išsibarstymas paveikslėlyje, kuris gali padaryti tekstą sunkiai ar visai neįskaitomu.
+Yra specifiniai triukšmo tipai, kurių Tesseract nesugeba pašalinti vykdydama binarizacijos etapą, todėl ženkliai sumažėja atpažinimo tikslumas.
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=10cm]{noise.png}
+  \captionof{figure}{Pašalintas triukšmas}
+  \label{noise}
+\end{minipage}
+
+\sectionnonumnocontent{Pasukimas / Iškreipimas}
+Iškreiptas paveikslėlis būna tada, kai yra nuskanuojamas lapas kreivei. Tesseract linijų atpažinimo tikslumas sumažėja jei puslapis nėra visiškai horizontalus, o
+tai įtakoja patį teksto atpažinimą. Norint išspręsti šią problemą, reikia pakreipti puslapį taip, kad tekslo linijos būtų horizontalios.
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=10cm]{skew-linedetection.png}
+  \captionof{figure}{Iškreipto puslapio išlyginimas}
+  \label{skew-linedetection}
+\end{minipage}
+
+\sectionnonumnocontent{Kraštinės}
+
+\textbf{Skanuotų puslapių kraštinių naikinimas}
+
+Skanuoti puslapiai dažnai turi tamsias kraštinės aplinkui tekstą. 
+Tai dažnai gali būti atpažįstami kaip papildomi simboliai, ypač jei skiriasi jų formos ir atspalviai.
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=10cm]{borders.png}
+  \captionof{figure}{Puslapio kraštinių naikinimas}
+  \label{borders}
+\end{minipage}
+
+\textbf{Tekstas be kraštinių}
+Jei norimas atpažinti tekstas visiškai neturių kraštinių ir yra nuo krašto iki krašto, Tesseract programa gali turėti sunkumų bandant atpažinti tekstą.
+Panaudojant vieną komandą, lengvai galima pridėti kraštines iš visų pusių (naudojama \textit{ImageMagick®} programa):
+
+\begin{verbatim}
+  convert  input.jpg  -bordercolor White -border 10x10 output.jpg
+\end{verbatim}
+
+\sectionnonumnocontent{Permatomumas / alfa kanalas}
+Kai kurie paveikslėlių formatai (pvz.: png) turi alfą kanalą, kuris suteikia galimybę saugoti permatomumo reikšmę nuotraukoje.
+Alfa kanalu dažniausiai nusakomas paveikslėlio skaidrumas. Paprastai prie 24 nuotraukos bitų, kuriuose kiekvienai iš trijų pagrindinių spalvų skiriama po 8 bitus, pridedami papildomi
+8 bitai, kurie saugo skaidrumo informaciją. 
+
+Tesseract 3.0x versijos tikisi, kad pats vartotojas pateiks paveiksliuką jau su panaikinta alfa kanalu. Tai gali būti padaroma su tokia komanda (naudojama \textit{ImageMagick®} programa):
+
+\begin{verbatim}
+  convert input.png -alpha off output.png
+\end{verbatim}
+
+Tesseract 4.00 versijoje yra funkcionalumas, kuris pats pašalina alfa kanalą naudojant \textit{Leptonica} programos komandą \textit{pixRemoveAlpha()}. Ši komanda panaikina alfa kanalą
+suliedama jį su baltu fonu. Kartais (pvz.: filmų subtitrų atpažinimas) tai gali sukelti problemų, todėl vartotojai turėtų patys panaikinti alfa kanalą arba pritaikyti spalvų inversiją.
+
+\subsubsubsection{Puslapių skirstymo metodas}
+Tesseract programos standartinis veikimo principas pagrįstas tuo, kad programa tikisi paveikslėlio puslapio
+pavidalu su jame esančiu tekstu. Tačiau, jei norima atpažinti tik dalį teksto, yra įvairiausių teksto skirstymo 
+parametrų, kurį reikia nurodyti naudojant komandą \textit{--psm} ir nurodant komandos numerį.
+
+\begin{enumerate}
+  \setcounter{enumi}{-1}
+  \item Orientacija ir rašto aptikimas (OSD).
+  \item Automatinis puslapio skirstymas su rašto aptikimu (OSD).
+  \item Automatinis puslapio skirstymas, bet be rašto aptikimo (OSD) ir be simbolių atpažinimo (OCR).
+  \item Pilnai automatinis puslapio skirstymas, bet be rašto aptikimo (OSD) (Numatytasis režimas).
+  \item Vienas teksto stulpelis.
+  \item Vienas vertikaliai išlygiuoto teksto blokas.
+  \item Vienas teksto blokas.
+  \item Paveikslėlį laikyti kaip vieną teksto liniją.
+  \item Paveikslėlį laikyti kaip vieną žodį.
+  \item Paveikslėlį laikyti kaip vieną žodį apskritime.
+  \item Paveikslėlį laikyti kaip vieną simbolį.
+  \item Išmėtytas tekstas. Rasti kuo daugiau teksto nesilaikant jokios tvarkos.
+  \item Atpažinti išmėtytą tekstą su rašto aptikimu (OSD).
+  \item Neapdorota eilutė. Paveikslėlį laikyti kaip vieną teksto liniją, išvengiant specifinių Tesseract gudrybių.
+\end{enumerate}
+
+\subsubsubsection{Žodynai, žodžių sąrašai, šablonai}
+Tesseract programa optimizuota taip, kad geriausiai atpažintų sakinius, susidarančius iš žodžių. 
+Jei yra bandoma atpažinti nestandartinės strukturos tekstus (pvz.: sąskaitas, čekius, prekių sąrašus, kodus), yra keletas papildomų 
+būdų, kaip būtų galima pagerinti atpažinimo tikslumą.
+
+Pirmiausiai reikia įsitikinti, kad yra pasirinktas tinkamas puslapio skirstymo būdas. Tai užtikrina, kad bus efektyviausiai ieškoma teksto.
+
+Žodynų atjungimas, kuriuos naudoja Tesseract turėtų pagerinti atpažinimą, jei dauguma teksto nėra žodyne esantys žodžiai.
+Norint išjungti funkcionalumą, kai naudojami Tesseract žodynai, reikia nurodyti \textit{FALSE} reikšmę šiems konfigūraciniams parametrams:
+\textit{load\textunderscore system\textunderscore dawg} ir \textit{load\textunderscore freq\textunderscore dawg}.
+
+Taip pat yra galimybė pačiam vartotojui prisidėti norimus žodžius į Tesseract programą, kurie padės atpažinimo varikliui geriau suprasti žodžius.
+Be žodžių, yra galimybė prisidėti simbolių sekų šablonus, kurie dar labiau padės pagerinti tikslumą.
+
+\subsubsection{Rinkmenų pasiruošimas}
+Norint atlikti LSTM rekurentinio tinklo mokymą Tesseract 4.0 versijos aplinkoje, reikia susigeneruoti atitinkamo formato mokymo rinkmenas.
+Kiekvienas sugeneruotas automobilio numeris turi turėti 5 skirtingus rinkmenas:
+\begin{itemize} --TODO
+  \item .box formato - 
+  \item .lstmf formato - 
+  \item .gt.txt formato - tekstinė rinkmena, kurioje yra tekstas, kuris yra pavaizduotas paveikslėlyje.
+  \item .txt formato - 
+  \item .tif formato - paveiksliukas, išsaugotas TIFF formatu.
+\end{itemize}
+
+--TODO
+https://github.com/tesseract-ocr/tesseract/wiki/TrainingTesseract-4.00
+prideti kaip vyko tinklo mokymas 2h
+Makefile 1h
+statistika 1h
+
+
+
+
+
+\pagebreak
+\section{Vaizdo atpažinimas}
+--TODO
+aprašymas 10min
+
+\subsection{Numerio rėmelio atpažinimas}
+Norint aptikti ir atpažinti realiuose paveikslėliuose numerio rėmelį, į neuroninį tinklą paduodamos 128x64 pikselių dydžio
+paveikslėlio dalys, kaip jau buvo aprašyta \ref{Mokymo duomenų generavimas} skyriuje.
+Atpažįstant realius paveikslėlius, naudojama kitokia neuroninio tinklo architektūra. Paskutiniai du lygmenys vietoj to, 
+kad būtų pilnai sujungti, yra konvoliuciniai. Taip pat pradinio paveikslėlio dydis neturi būti 128x64 pikselių, o gali būti
+bet koks. Idėja tokia, kad pilno dydžio paveikslėlis gali būti paduodamas į neurorinį tinklą suskaidant jį į dalis slenkančio
+langelio principu, bei kiekvienai iš jų grąžinant rezultatą, ar rėmėlis egzistuoja. Naudojant vienodą neuroninį tinklą visoms 
+paveikslėlio dalims yra pranašesnis nei atskiri neuroniniai tinklai, kadangi slenkantys langai dalinsis dauguma konvoliucinių 
+savybių tarpusavyje, todėl nereikės kiekvieną kart atlikti naujų skaičiavimo operacijų.
+
+Slenkančio lango principu veikiančio neuroninio tinklo rezultatai:
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=12cm]{sliding.jpg}
+  \captionof{figure}{Slenkančio lango principu gauti rezultatai}
+  \label{daug_remeliu}
+\end{minipage}
+
+Žali stačiakampiai (\ref{daug_remeliu} pav.) vaizduoja regionus kur tikimybė, kad rėmelis egzistuoja yra didiesnė arba lygi 99\%.
+Tai padaryta tokiu tikslu, kadangi mokymo duomenų aibėje apie 50\% paveikslėlių yra su egzistuojančiu numerio rėmeliu,
+kai realiame pasaulyje paveikslėlių su numerio rėmeliais yra daug mažiau. Jeigu būtų naudojama 50\% tikimybė atrinkti 
+teisingiems paveikslėliams, tai būtų neapsisaugota nuo pasitaikančių panašių paveikslėlių atitikmenų.
+
+Norint panaikinti perteklinius dublikatus, pritaikomas 
+Non-Maximum Suppresion \footnote{Non-Maximum Suppresion angl. - ne maksimalios reikšmės slopinimo algoritmas} algoritmas, kuris
+tarp visų besikertančių stačiakampių palieka tik didžiausią tikimybę turinčią reikšmę\cite{girshick2014rich}.
+
+Gavus likusį vieną stačiakampį (\ref{cropped} pav.), pagal to objekto koordinates iškerpamas paveikslėlis ir gaunamas toks rezultatas:
+
+\begin{minipage}{\linewidth}
+  \centering
+  \includegraphics[width=4cm]{cropped_4.jpg}
+  \captionof{figure}{Iškirptas gautas rezultatas}
+  \label{cropped}
+\end{minipage}
+
+
+
+\subsection{Numerio simbolių atpažinimas}
+--TODO
+programa kuri naudoja tsseract su istreniruotu tinklu 1h
+paveiksliukai 1h
+
+
+\pagebreak
+\sectionnonum{Rezultatai}
+--TODO 20min
+Rezultatų skyriuje išdėstomi pagrindiniai darbo rezultatai: kažkas išanalizuota, kažkas
+sukurta, kažkas įdiegta. Rezultatai pateikiami sunumeruotų (gali būti hierarchiniai) sąrašų pavidalu.
+Darbo rezultatai turi atitikti darbo tikslą.
+
+\sectionnonum{Išvados}
+--TODO 20min
+Išvadų skyriuje daromi nagrinėtų problemų sprendimo metodų palyginimai, siūlomos
+rekomendacijos, akcentuojamos naujovės. Išvados pateikiamos sunumeruoto (gali būti
+hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą. 
+
+\pagebreak
+\printbibliography[heading=bibintoc]
+
+\pagebreak
+\sectionnonum{Sąvokų apibrėžimai}
+Sutartinių ženklų, simbolių, vienetų ir terminų sutrumpinimų sąrašas (jeigu
+ženklų, simbolių, vienetų ir terminų bendras skaičius didesnis nei 10 ir
+kiekvienas iš jų tekste kartojasi daugiau nei 3 kartus).
+
+\sectionnonum{Santrumpos}
+--TODO
+\begin{itemize}
+  \item LSTM - trumpinys angl. Long short-term memory - rekurentinio neuroninio tinklo architektūra.
+  \item Tesseract - optinė ženklų atpažinimo programa, kuri geba naudoti neuroninius tinklus atpažinimui.
+  \item TIFF
+  \item Leptonica
+  \item DPI
+  \item PNG
+  \item OSD
+  \item OCR
+  \item VGSL
+  \item Tensorflow
+  \item OpenMP
+  \item SSE
+  \item AVX
+  \item SIMD
+  \item Tenzorius - geometrinis objektas, susidedantis iš sumos komponenčių, kurios yra transformuojamos pagal tiesinius sąryšius.
+  \item 
+  \item 
+  \item 
+  \item 
+  \item 
+\end{itemize}
+
+\appendix  % Priedai
+% Prieduose gali būti pateikiama pagalbinė, ypač darbo autoriaus savarankiškai
+% parengta, medžiaga. Savarankiški priedai gali būti pateikiami kompiuterio
+% diskelyje ar kompaktiniame diske. Priedai taip pat vadinami ir numeruojami.
+% Tekstas su priedais siejamas nuorodomis (pvz.: \ref{img:mlp}).
+
+% \section{Niauroninio tinklo struktūra}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[scale=0.5]{img/MLP}
+%     \caption{Paveikslėlio pavyzdys}
+%     \label{img:mlp}
+% \end{figure}
+
+
+% \section{Eksperimentinio palyginimo rezultatai}
+% % tablesgenerator.com - converts calculators (e.g. excel) tables to LaTeX
+% \begin{table}[H]\footnotesize
+%   \centering
+%   \caption{Lentelės pavyzdys}
+%   {\begin{tabular}{|l|c|c|} \hline
+%     Algoritmas & $\bar{x}$ & $\sigma^{2}$ \\
+%     \hline
+%     Algoritmas A  & 1.6335    & 0.5584       \\
+%     Algoritmas B  & 1.7395    & 0.5647       \\
+%     \hline
+%   \end{tabular}}
+%   \label{tab:table example}
+% \end{table}
+
+\end{document}
