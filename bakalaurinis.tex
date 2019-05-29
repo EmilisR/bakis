@@ -507,11 +507,7 @@ Taip pat yra keletas kitų metodų, kurie turėtų būti įgyvendinti, priklauso
   \item Kaip ir su kiekvienu nauju kodu, \textit{lstm/Makefile.am} failas turi būti papildytas naujais failų pavadinimais. 
 \end{itemize}
 
-\subsubsection{Modelis}
---TODO
-aprašymas 10min
-
-\subsubsubsection{VGSL specifikacijos}
+\subsubsection{VGSL specifikacijos}
 
 VGSL Specs - rapid prototyping of mixed conv/LSTM networks for images
 Variable-size Graph Specification Language (VGSL) enables the specification of a neural network, composed of convolutions and LSTMs, 
@@ -557,7 +553,7 @@ O(2|1|0)(l|s|c)n output layer with n classes.
   NOTE Only O1s and O1c are currently supported.
 The number of classes is ignored (only there for compatibility with TensorFlow) as the actual number is taken from the unicharset.
 
-\subsubsubsection{Syntax of the Layers in between}
+\subsubsection{Syntax of the Layers in between}
 
 NOTE that all ops input and output the standard TF convention of a 4-d tensor: [batch, height, width, depth] regardless of any collapsing of dimensions. 
 This greatly simplifies things, and allows the VGSLSpecs class to track changes to the values of widths and heights, so they can be correctly passed in 
@@ -654,7 +650,7 @@ Ct5,5,16: 5 x 5 Convolution with 16 outputs and tanh non-linearity
 []: The network is always expressed as a series of layers.
 The summarizing LSTM makes this network more resilient to vertical variation in position of the text.
 
-\subsubsubsection{Variable size inputs and summarizing LSTM}
+\subsubsection{Variable size inputs and summarizing LSTM}
 
 NOTE that currently the only way of collapsing a dimension of unknown size to known size (1) is through the use of a summarizing LSTM. 
 A single summarizing LSTM will collapse one dimension (x or y), leaving a 1-d sequence. The 1-d sequence can then be collapsed in the 
@@ -664,15 +660,15 @@ For OCR purposes then, the height of the input images must either be fixed, and 
 or to allow variable-height images, a summarizing LSTM must be used to collapse the vertical dimension to a single value. 
 The summarizing LSTM can also be used with a fixed height input.
 
-\subsubsubsection{Programos įgyvendinimui panaudotas modelis}
+\subsubsection{Modelis}
+--TODO
 --net_spec "[1,36,0,1 Ct3,3,16 Mp3,3 Lfys48 Lfx96 Lrx96 Lfx256 O1c`head -n1 data/unicharset`]" 
 --learning_rate 20e-4 
 --max_iterations 100000
 
 \pagebreak
 \section{Neuroninių tinklų apmokymas}
---TODO
-aprašymas 10min
+Šiame skyriuje aprašomi veiksmai skirti apmokyti neuronius tinklus panaudojant sugeneruotus paveikslėlius.
 
 \subsection{Konvoliucinio neuroninio tinklo mokymas}
 Apmokymui buvo naudoti 100.000 paveikslėlių, iš kurių 75.000 sudarė mokymo duomenys, o 25.000 testavimo duomenys.
@@ -727,7 +723,7 @@ Egzistuoja įvairiausių priežasčių, kodėl Tesseract atpažinimo programa ne
 Svarbu pabrėžti, kad Tesseract modelio permokymas retai padės, nebent naudojamas labai nestandartinis šriftas arba nauja dar netreniruota ir neapmokyta kalba.
 
 \subsubsubsection{Paveikslėlio apdorojimas}
-Pati Tesseract sistema savyje atlieka įvairius paveikslėlių apdorojimo veiksmus, pasinaudojant Leptonica\footnote{Leptonica - --TODO} biblioteka, prieš pradedant pati teksto atpažinimą.
+Pati Tesseract sistema savyje atlieka įvairius paveikslėlių apdorojimo veiksmus, pasinaudojant Leptonica biblioteka, prieš pradedant pati teksto atpažinimą.
 Dažniausiai Tesseract puikiai susitvarko su šita užduotimi, tačiau neišvengiamai atsiranda situacijų, su kuriuomis automatiškai susidoroti nepavyksta ir dėl to pastebimai nukenčia
 atpažinimo tikslumas.
 
@@ -890,8 +886,7 @@ statistika 1h
 
 \pagebreak
 \section{Vaizdo atpažinimas}
---TODO
-aprašymas 10min
+Šiame skyriuje aprašoma kaip panaudojami apmokyti neuroniniai tinklai skirti atlikti jiems paskirtas užduotis.
 
 \subsection{Numerio rėmelio atpažinimas}
 Norint aptikti ir atpažinti realiuose paveikslėliuose numerio rėmelį, į neuroninį tinklą paduodamos 128x64 pikselių dydžio
@@ -941,9 +936,14 @@ paveiksliukai 1h
 \pagebreak
 \sectionnonum{Rezultatai}
 --TODO 20min
-Rezultatų skyriuje išdėstomi pagrindiniai darbo rezultatai: kažkas išanalizuota, kažkas
-sukurta, kažkas įdiegta. Rezultatai pateikiami sunumeruotų (gali būti hierarchiniai) sąrašų pavidalu.
-Darbo rezultatai turi atitikti darbo tikslą.
+\begin{enumerate}
+  \item Pasinaudojus paveikslėlių duomenų rinkiniu susigeneruoti 1.000.000 atsitiktinių paveikslėlių su automobilio numeriais.
+  \item Apmokyti kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą (rėmelio atpažinimui) pateikiant sugeneruotus paveikslėlius.
+  \item Apmokyti Tesseract LSTM rekurentinį neuroninį tinklą (teksto atpažinimui) pateikiant sugeneruotus paveikslėlius.
+  \item Pasinaudojus kursinio darbo metu sukurtu ir apmokytu konvoliuciniu neuroniniu tinklu atpažinti numerio rėmelį paveikslėlyje ir gauti jo koordinates.
+  \item Pagal gautas koordinates, iškirpti rėmelį ir pasinaudojus Tesseract LSTM neuroniniu tinklu atpažinti numerį bei atvaizduoti gautus rezultatus pradiniame paveikslėlyje.
+  \item Ištestuoti tinklą su tikrais paveikslėliais, kuriuose yra lietuviški automobilių numeriai.
+\end{enumerate}
 
 \sectionnonum{Išvados}
 --TODO 20min
@@ -956,28 +956,27 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
 
 \pagebreak
 \sectionnonum{Sąvokų apibrėžimai}
-Sutartinių ženklų, simbolių, vienetų ir terminų sutrumpinimų sąrašas (jeigu
-ženklų, simbolių, vienetų ir terminų bendras skaičius didesnis nei 10 ir
-kiekvienas iš jų tekste kartojasi daugiau nei 3 kartus).
+\begin{itemize}
+  \item Tesseract - optinė ženklų atpažinimo programa, kuri geba naudoti neuroninius tinklus atpažinimui.
+  \item Leptonica
+  \item Tensorflow
+  \item OpenMP
+  \item Tenzorius - geometrinis objektas, susidedantis iš sumos komponenčių, kurios yra transformuojamos pagal tiesinius sąryšius.
+\end{itemize}
 
 \sectionnonum{Santrumpos}
 --TODO
 \begin{itemize}
   \item LSTM - trumpinys angl. Long short-term memory - rekurentinio neuroninio tinklo architektūra.
-  \item Tesseract - optinė ženklų atpažinimo programa, kuri geba naudoti neuroninius tinklus atpažinimui.
   \item TIFF
-  \item Leptonica
   \item DPI
   \item PNG
   \item OSD
   \item OCR
   \item VGSL
-  \item Tensorflow
-  \item OpenMP
   \item SSE
   \item AVX
   \item SIMD
-  \item Tenzorius - geometrinis objektas, susidedantis iš sumos komponenčių, kurios yra transformuojamos pagal tiesinius sąryšius.
   \item 
   \item 
   \item 
