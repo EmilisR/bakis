@@ -550,7 +550,7 @@ Paskutinis žodis nurodo apibūdina išvestį:
 \end{itemize}
 
 \subsubsection{Vidinių tinklo lygių sintaksė}
-Žemiau apraš
+Žemiau aprašomos funkcinės, \textit{plumbing} operacijos bei pateikiami jų pavyzdžiai.
 
 \textbf{Funkcinės operacijos}
 Egzistuoja 5 skirtingos funkcinės operacijos:
@@ -591,69 +591,82 @@ Pavyzdžiai:
 \end{itemize}
 
 \textbf{Plumbing ops}
+\textit{Plumbing} operacijos leidžia konstruoti pakankamai kompleksiškus grafus:
 
-The plumbing ops allow the construction of arbitrarily complex graphs. Something currently missing is the ability to define 
-macros for generating say an inception unit in multiple places.
+\begin{itemize}
+  \item {[...]} - Vykdyti ... neuroninius tinklus nuosekliai lygiais.
+  \item (...) - Vykdyti ... neuroninius tinklus lygiagrečiai, jungiant jų išvestis į gylį.
+  \item S<y>,<x> - Pakeisti dviejų dimensijų įvestį susitraukimo koeficientu y,x, sutvarkant duomenis padidinant įvesties gylį koeficientu xy.
+  \item Mp<y>,<x> - pritaikyti \textit{Maxpool} operaciją kiekvienam stačiakampiui (y, x), gaunant vienintelę reikšmę.
+\end{itemize}
 
-[...] Execute ... networks in series (layers).
-(...) Execute ... networks in parallel, with their output concatenated in depth.
-S<y>,<x> Rescale 2-D input by shrink factor y,x, rearranging the data by
-  increasing the depth of the input by factor xy.
-  **NOTE** that the TF implementation of VGSLSpecs has a different S that is
-  not yet implemented in Tesseract.
-Mp<y>,<x> Maxpool the input, reducing each (y,x) rectangle to a single value.
-
-\textbf{Full Example: A 1-D LSTM capable of high quality OCR}
+\textbf{Pavyzdys: Vienos dimensijos LSTM tinklas, galintis tiksliai atpažinti tekstą}
 
 \begin{verbatim}
   [1,1,0,48 Lbx256 O1c105]
 \end{verbatim}
 
-As layer descriptions: (Input layer is at the bottom, output at the top.)
+Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
-O1c105: Output layer produces 1-d (sequence) output, trained with CTC,
-  outputting 105 classes.
-Lbx256: Bi-directional LSTM in x with 256 outputs
-1,1,0,48: Input is a batch of 1 image of height 48 pixels in greyscale, treated
-  as a 1-dimensional sequence of vertical pixel strips.
-[]: The network is always expressed as a series of layers.
-This network works well for OCR, as long as the input image is carefully normalized in the vertical direction, with the baseline and meanline in constant places.
+\begin{itemize}
+  \item O1c105: Išvesties lygis, pagaminantis vienos dimensijos seką, treniruotą su CTC, išvedantis 105 klases.
+  \item Lbx256: Dvikryptis LSTM lygis judantis x kryptimi su 256 išvestimis.
+  \item 1,1,0,48: Įvestis yra juodai baltas paveikslėlis, kurio aukštis yra 48 pikseliai, laikomas kaip vienos dimensijos vertikalių pikselių seka.
+  \item {[ ]}: Tinklas visada vykdo lygius nuosekliai.
+\end{itemize}
 
-\textbf{Full Example: A multi-layer LSTM capable of high quality OCR}
+Šis sukurtas tinklas gerai veikiai atpažįstant tekstą, tol kol įvesties paveikslėlis normalizuotas vertikalioje padėtyje.
+
+\textbf{Pavyzdys: Keletos lygių LSTM tinklas, galintis tiksliai atpažinti tekstą}
 
 \begin{verbatim}
   [1,0,0,1 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]
 \end{verbatim}
 
-As layer descriptions: (Input layer is at the bottom, output at the top.)
+Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
-O1c105: Output layer produces 1-d (sequence) output, trained with CTC,
-  outputting 105 classes.
-Lfx256: Forward-only LSTM in x with 256 outputs
-Lrx128: Reverse-only LSTM in x with 128 outputs
-Lfx128: Forward-only LSTM in x with 128 outputs
-Lfys64: Dimension-summarizing LSTM, summarizing the y-dimension with 64 outputs
-Mp3,3: 3 x 3 Maxpool
-Ct5,5,16: 5 x 5 Convolution with 16 outputs and tanh non-linearity
-1,0,0,1: Input is a batch of 1 image of variable size in greyscale
-[]: The network is always expressed as a series of layers.
-The summarizing LSTM makes this network more resilient to vertical variation in position of the text.
+\begin{itemize}
+  \item O1c105: Išvesties lygis, pagaminantis vienos dimensijos seką, treniruotą su CTC, išvedantis 105 klases.
+  \item Lfx256: Tik pirmyn judantis LSTM lygis x kryptimi su 256 išvestimis.
+  \item Lrx128: Tik priešingai judantis LSTM lygis x kryptimi su 128 išvestimis.
+  \item Lfx128: Tik pirmyn judantis LSTM lygis x kryptimi su 128 išvestimis.
+  \item Lfys64: Dimensiją apibendrinantis LSTM lygis, apibendrinantis y dimensiją su 64 išvestimis.
+  \item Mp3,3: 3x3 \textit{Maxpool} operacija.
+  \item Ct5,5,16: 5x5 konvoliucija su 16 išvesčių ir hiperbolinio tangento aktyvacijos funkcija.
+  \item 1,0,0,1: Įvestis yra juodai baltas paveikslėlis.
+  \item {[ ]}: Tinklas visada vykdo lygius nuosekliai.
+\end{itemize}
 
-\subsubsection{Variable size inputs and summarizing LSTM}
+Šis sukurtas LSTM tinklas yra atsparesnis vertikaliems teksto nuokrypiams.
 
-NOTE that currently the only way of collapsing a dimension of unknown size to known size (1) is through the use of a summarizing LSTM. 
-A single summarizing LSTM will collapse one dimension (x or y), leaving a 1-d sequence. The 1-d sequence can then be collapsed in the 
-other dimension to make a 0-d categorical (softmax) or embedding (logistic) output.
+\subsubsection{Kintamo dydžio įvestis ir apibendrinantis LSTM lygis}
+Kol kas vienintelis būdas sumažinti nežinomo dydžio dimensiją iki žinomo dydžio (1) yra naudojant apibendrinantį LSTM lygį.
+Vienas apibendrinantis LSTM lygis sumažins vieną dimensiją (x arba y), palikdamas vienos dimensijos seką.
+Tada vienos dimensijos seka gali būti sumažinta iki \textit{Softmax} ar logistinės aktyvacijos funkcijos išvesties.
 
-For OCR purposes then, the height of the input images must either be fixed, and scaled (using Mp or S) vertically to 1 by the top layer, 
-or to allow variable-height images, a summarizing LSTM must be used to collapse the vertical dimension to a single value. 
-The summarizing LSTM can also be used with a fixed height input.
+Toliau norint atpažinti tekstą, įvesties paveikslėlių aukštis turi būti fiksuotas arba pakeistas jų vertikalus dydis (panaudojant \textit{Mp ar S} funkcijas) iki 1,
+arba leidžiant kintamo aukščio paveikslėlius, apibendrinantis LSTM lygis turi sumažinti vertikalią dimensiją iki vienintelės reikšmės.
+Apibendrinantis LSTM lygis taip pat gali būti naudojamas su fiksuoto aukščio įvestimis.
 
 \subsubsection{Modelis}
---TODO
---net_spec "[1,36,0,1 Ct3,3,16 Mp3,3 Lfys48 Lfx96 Lrx96 Lfx256 O1c`head -n1 data/unicharset`]" 
---learning_rate 20e-4 
---max_iterations 100000
+Šiam konkrečiam uždaviniui, kuris turi atpažinti automobilio numerio simbolius, pasirinktas tokios konfigūracijos neuroninis LSTM tinklas:
+
+\begin{verbatim}
+  [1,36,0,1 Ct3,3,16 Mp3,3 Lfys48 Lfx96 Lrx96 Lfx256 O1c`head -n1 data/unicharset`]
+\end{verbatim}
+
+Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
+
+\begin{itemize}
+  \item O1c`head -n1 data/unicharset`: Išvesties lygis, pagaminantis vienos dimensijos seką, treniruotą su CTC, išvedantis n klasių nurodytų faile esančiame \textit{data/unicharset}.
+  \item Lfx256: Tik pirmyn judantis LSTM lygis x kryptimi su 256 išvestimis.
+  \item Lrx96: Tik priešingai judantis LSTM lygis x kryptimi su 96 išvestimis.
+  \item Lfx96: Tik pirmyn judantis LSTM lygis x kryptimi su 96 išvestimis.
+  \item Lfys48: Lfys64: Dimensiją apibendrinantis LSTM lygis, apibendrinantis y dimensiją su 48 išvestimis.
+  \item Mp3,3: 3x3 \textit{Maxpool} operacija.
+  \item Ct3,3,16: 3x3 konvoliucija su 16 išvesčių ir hiperbolinio tangento aktyvacijos funkcija.
+  \item 1,36,0,1: Įvestis yra juodai baltas paveikslėlis, kurio aukštis 36 pikseliai.
+\end{itemize}
 
 \pagebreak
 \section{Neuroninių tinklų apmokymas}
@@ -953,6 +966,8 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
   \item Tenzorius - geometrinis objektas, susidedantis iš sumos komponenčių, kurios yra transformuojamos pagal tiesinius sąryšius.
   \item Softmax
   \item Relu
+  \item Plumbing
+  \item Maxpool
 \end{itemize}
 
 \sectionnonum{Santrumpos}
