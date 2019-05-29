@@ -101,11 +101,6 @@ Pagrindinis šio tyrimo metodas - rekurentinio LSTM dirbtinio neuroninio tinklo 
 analizė. Analizuojama pasitelkiant įvairius mokslinius šaltinius, straipsnius, publikacijas, knygas.
 Kitoje darbo dalyje bus atliekamas eksperimentas pritaikant teoriją.
 
-\sectionnonumnocontent{Literatūros šaltinių apžvalga}
-Bendrai apie LSTM
---TODO 2h
-
-
 \sectionnonumnocontent{Darbo atlikimo procesas}
 Pirmiausia bus gilinamasi į Tesseract LSTM neuroninio tinklo veikimo principus \cite{bhushan2013license}.
 Išanalizavus, bus bandoma apmokyti neuroninį tinklą su kursinio darbo metu sugeneruotais 
@@ -470,6 +465,54 @@ kadangi naudojama tos pačios sintaksės neuroninio tinklo modelio aprašymo kal
 Pagrindinė VGSL idėja yra, kad nebūtina išmokti daug naujų dalykų, kad būtų įmanoma sukurti ir apkomyti neuroninį tinklą.
 Nereikia mokytis \textit{Python} programavimo kalbos, \textit{TensorFlow} bibliotekos ar net rašyti C++ programinio kodo.
 Užtenka įvaldyti VGSL kalbos sintaksines ypatybes, kad būtų įmanoma taisyklingai sudaryti neuroninį tinklą.
+
+\subsubsection{Bendrai apie LSTM}
+The LSTM contains special units called memory blocks in the
+recurrent hidden layer. The memory blocks contain memory
+cells with self-connections storing the temporal state of the network in addition to special multiplicative units called gates to
+control the flow of information. Each memory block in the original architecture contained an input gate and an output gate.
+The input gate controls the flow of input activations into the
+memory cell. The output gate controls the output flow of cell
+activations into the rest of the network. Later, the forget gate
+was added to the memory block [18]. This addressed a weakness of LSTM models preventing them from processing continuous input streams that are not segmented into subsequences.
+The forget gate scales the internal state of the cell before adding
+it as input to the cell through the self-recurrent connection of
+the cell, therefore adaptively forgetting or resetting the cell’s
+memory. In addition, the modern LSTM architecture contains
+peephole connections from its internal cells to the gates in the
+same cell to learn precise timing of the outputs [19].
+An LSTM network computes a mapping from an input
+sequence x = (x1, ..., xT ) to an output sequence y =
+(y1, ..., yT ) by calculating the network unit activations using
+the following equations iteratively from t = 1 to T:
+it = σ(Wixxt + Wimmt−1 + Wicct−1 + bi) (1)
+ft = σ(Wfxxt + Wfmmt−1 + Wf cct−1 + bf ) (2)
+ct = ft  ct−1 + it  g(Wcxxt + Wcmmt−1 + bc) (3)
+ot = σ(Woxxt + Wommt−1 + Wocct + bo) (4)
+mt = ot  h(ct) (5)
+yt = φ(Wymmt + by) (6)
+where the W terms denote weight matrices (e.g. Wix is the matrix of weights from the input gate to the input), Wic, Wf c, Woc
+are diagonal weight matrices for peephole connections, the b
+terms denote bias vectors (bi is the input gate bias vector), σ is
+the logistic sigmoid function, and i, f, o and c are respectively
+the input gate, forget gate, output gate and cell activation vectors, all of which are the same size as the cell output activation
+vector m,  is the element-wise product of the vectors, g and h
+are the cell input and cell output activation functions, generally
+and in this paper tanh, and φ is the network output activation
+function, softmax in this paper.
+\cite{sak2014long}
+\begin{minipage}{\linewidth}
+  \includegraphics[width=12cm]{memory_blocks.png}
+  \captionof{figure}{LSTM atminties blokai}
+  \label{memory_blocks}
+\end{minipage}
+
+\subsubsubsection{Rekurentinis neuroninis tinklas}
+Rekurentinis neuroninis tinklas - skirtingai nuo grįžtamuoju ryšiu grįstų neuroninių tinklų, yra rekursinio 
+dirbtinio neuroninio tinklo variantas, kuriame ryšiai tarp neuronų sudaro apskritą ratą. Tai reiškia,
+kad išvedimo rezultatas priklauso ne tik nuo dabartinių įvesčių, bet ir nuo ankstesnio etapo neuronų būklės. 
+Šis metodas leidžia vartotojams išspręsti problemas, susijusias su balso ar kalbos atpažinimu.
+Atlikti tyrimai rodo, kad įmanoma sukurti rekurentinį neuroninį tinklą, kuris gali generuoti naujus sakinius ir dokumentų santraukas.
 
 \subsubsection{Integracija su Tesseract}
 Integruota neuroninio tinklo posistemė gali būti panaudojama kaip papildinys esamai analizės sistemai atpažįstant tekstą dideliame dokumente arba
