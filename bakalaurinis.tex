@@ -116,6 +116,7 @@ naudos kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą skirtą atp
 darbe sukurtą bei modifikuotą Tesseract LSTM neuroninio tinklo konfigūraciją.
 
 \sectionnonumnocontent{Eksperimente naudojami instrumentai}
+--TODO
 
 \pagebreak
 \section{Duomenų generavimas}
@@ -126,11 +127,9 @@ tinklą reikia apmokyti su dideliu kiekiu duomenų. Apmokant bet kokį neuronin�
 duomenų rinkinys su norimu gauti rezultatu. 
 
 \subsubsection{Pirminis duomenų generavimo variantas}
---TODO
-aprašymas 10min
+Pirminis duomenų generavimo variantas, kuris buvo įgyvendintas bei sėkmingai sugeneruoti 100.000 paveikslėlių skirtų neuroninio tinklo apmokymui.
 
 \subsubsubsection{Generavimo parametrai}
-
 Šiam tyrimui buvo pasirinkta generuoti duomenų rinkinį, kurių kiekvienas paveikslėlis būtų 128 pikselių
 pločio ir 64 pikselių ilgio. Toks pasirinktas būdas užtikrina, kad neuroninis tinklas bus pajėgus suprasti 
 paveikslėlio turinį, o dydis pakankamai mažas, kad būtų galima turėti efektyviai veikiantį neuroninį tinklą.
@@ -366,8 +365,8 @@ kaip pasikeite statistika
 
 
 \subsection{Numerio atpažinimui skirtų duomenų generavimas}
---TODO
-aprašymas 10min
+Norint sėkmingai apmokyti neuroninį tinklą, reikia daug pradinių mokymo duomenų. Šiam tikslui pasiekti nuspręsta duomenis susigeneruoti, kadangi tiek daug lietuviškų numerių
+tikrų nuotraukų nėra įmanoma gauti. 
 
 \subsubsection{Idėja}
 Norint kuo efektyviau apmokyti LSTM rekurentinį neuroninį tinklą, reikia sugeneruoti tokio pačio šrifto atsitiktinius numerius, kurie kuo panašiau atkurtų realią situaciją. 
@@ -403,13 +402,12 @@ Veikimo eiga:
 
 \pagebreak
 \section{Neuroninių tinklų architektūra}
---TODO
-aprašymas 10min
+Šiame skyriuje aprašyti dviejų skirtingų neuroninių tinklų architektūriniai sprendimai.
+Numerio rėmelio atpažinimui naudojamas konvoliucinis neuroninis tinklas bei 
+numeryje esančių simbolių atpažinimui naudojamas rekurentinis neuroninis tinklas.
 
-
-\subsection{Numerio rėmėlio atpažinimui skirtas neuroninis tinklas}
---TODO
-aprašymas 10min
+\subsection{Numerio rėmelio atpažinimui skirtas neuroninis tinklas}
+Numerio rėmelio atpažinimui panaudotas konvoliucinis neuroninis tinklas.
 
 \subsubsection{Modelis}
 Neuroninis tinklas kurtas su Tensorflow bibliotekomis.
