@@ -1147,25 +1147,15 @@ Sumodeliuoti dviejų tipų neuroninius tinklus bei jų pagalba atpažinti lietuv
 Darbe buvo nagrinėta kaip išspręsti vaizdo atpažinimo problemą naudojantis neuroniniais tinklais.
 Atlikus eksperimentą buvo gautos šios išvados:
 \begin{enumerate}[itemsep=0.5pt]
-  \item 
+  \item Pavyko atpažinti automobilių numerius naudojantis konvoliuciniu neuroniniu tinklu.
+  \item Sukurto neuroninio tinklo pasiekta sparta (vid. 3 sekundės) nėra pakankama fiksuoti visų automobilių numerius stebint tiesioginiu vaizdu, tačiau yra pakankama integravus sistemą į stovėjimo aikštelių užkardus.
+  \item Programa atpažįsta tik tuos numerius, kurie nėra daugiau nei 15\% pakrypę.
+  \item Programa atpažįsta tik tuos numerius, kurių formatas yra trys raidės ir trys skaičiai.
+  \item Mokant rekurentinį neuroninį tinklą didelę neigiamą įtaką tikslumui daro paveikslėlių iškrypimai.
+  \item Prieš siunčiant paveikslėlį į rekurentinį neuroninį tinklą reikia jį apdoroti pagal rekomendacijas, kad paveikslėlis būtų atpažintas.
+  \item Naudojant rekurentinį neuroninį tinklą simbolių atpažinimas vyksta sparčiau nei kiti išbandyti OCR įrankiai.
+  \item Naudojant rekurentinį neuroninį tinklą atpažinimo tikslumas gali būti didesnis nei skandartinių OCR įrankių, jei modelis yra tinkamai apmokytas.
 \end{enumerate}
-
-Išnagrinėta kaip veikia konvoliucinis neuroninis tinklas, kaip generuoti duomenis jo apmokymui,
-kaip sudaryti neuroninio tinklo lygius, kaip apmokyti tinklą su sugeneruotais duomenimis bei kaip
-jį pritaikyti sukurtoje programoje, kurį geba iškirpti numerio rėmelį nuotraukoje.
-
-Padaryta išvada, kad įmanoma sukurti konvoliucinį neuroninį tinklą, kuris geba nuotraukoje
-identifikuoti numerio rėmelį bei jį iškirpti. Norint efektyvinti atpažinimą, reiktų išbandyti 
-daugiau neuroninių tinklų rūšių bei rasti efektyviausią.
-
-Taip pat nagrinėtas rekurentinis neuroninis tinklas, o tiksliau, Tesseract atviro kodo 
-programos 4.00 versija. Panaudotas naujas metodas, kuris naudoja LSTM architektūros
-neuroninį tinklą. Sudarytas neuroninis tinklas bei parašyta programa kuri geba 
-atpažinti raides ir skaičius.
-
-Padaryta išvada, kad Tesseract LSTM yra tinkamas įrankis atpažinti tekstą nuotraukose,
-turi daug konfigūracijos galimybių ir pakankamai lengvai galima susikurti neuroninio
-tinklo modelį.
 \pagebreak
 \printbibliography[heading=bibintoc]
 
