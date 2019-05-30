@@ -65,12 +65,36 @@
 % nagrinėta problema ir padarytos išvados. Santraukų gale nurodomi darbo raktiniai žodžiai.
 % Santraukos lietuvių ir anglų kalbomis rašomos atskiruose puslapiuose. Kiekvienos jų apimtis – ne
 % daugiau kaip 0,5 puslapio. 
+Darbe analizuojami dviejų tipų neuroniniai tinklai, kurių pagalba galima iš nuotraukos atpažinti automobilio numerius.
+
+Šio darbo tikslas - sukurti programą, kuri gebėtų atpažinti lietuviškus automobilio numerius paveikslėlyje.
+Šiam tikslui atlikti buvo atskirtos dvi dalys. Pirmoje dalyje sugeneruojama, kuo panašesnių į realaus pasaulio sąlygas,
+paveikslėlių, kurie panaudoti apmokyti konvoliucinė neuroninį tinklą. Vėliau tinklas apmokomas su sugeneruotais duomenimis.
+Galiausiai parašoma programa, kuri randa automobilio numerio rėmelio koordinates ir išsaugo iškirptą paveikslėlį.
+Antroje dalyje sugeneravus atsitiktinių automobilių numerių simbolių, buvo apmokytas Tesseract LSTM rekurentinis neuroninis
+tinklas. Vėliau sukurta programa, kuri pasinaudojus gautu neuroniniu tinklu, atpažįsta simbolius esančius automobilio numeryje.
+Darbe apžvelgiami būdai kaip reikia generuoti mokymo duomenis. Kaip modifikuoti paveikslėlius, norint,
+kad neuroninio tinklo mokymo metu būtų pasiekti kuo geresni rezultatai.
+
+Raktiniai žodžiai: konvoliucinis neuroninis tinklas, rekurentinis neuroninis tinklas, Tesseract, LSTM, automobilių numerių atpažinimas.
 \newpage
 \sectionnonumnocontent{Summary}
+The paper analyzes two types of neural network, which help to recognize car number plates from image.
+
+Aim of this work is to create a program, which can detect and recognize car number plate from image.
+There are two separated parts in this paper. In the first part, there were generated images with number plates in it 
+which are close to real world conditions and fed to convolutional neural network to train. Then the program was developed to 
+detect number plate borders using trained neural network and save cropped image.
+In the second part, there were generated random sequences of car number plates and then fed to the Tesseract LSTM recurrent 
+neural network. After that, the program was developed, which recognize car number plate symbols.
+This paper analyzes ways of generating different training data, how to modify images, to better train neural networks.
+
+Key words: convolutional neural network, recurrent neural network, Tesseract, Long short-term memory, car number plate recognition.
 % Santraukose lietuvių ir anglų kalbomis glaustai aprašomas darbo turinys: pristatoma
 % nagrinėta problema ir padarytos išvados. Santraukų gale nurodomi darbo raktiniai žodžiai.
 % Santraukos lietuvių ir anglų kalbomis rašomos atskiruose puslapiuose. Kiekvienos jų apimtis – ne
 % daugiau kaip 0,5 puslapio. 
+
 \newpage
 \tableofcontents
 
@@ -1044,29 +1068,87 @@ Gavus likusį vieną stačiakampį (\ref{cropped} pav.), pagal to objekto koordi
 
 
 \subsection{Numerio simbolių atpažinimas}
---TODO
-Sukurta programa, kuri naudodama apmokytą LSTM pagrindu veikiantį neuroninį tinklą atpažįsta automobilio numerius (žiūrėti priede \ref{detect})
-paveiksliukai 1h
+Sukurta programa, kuri naudodama apmokytą LSTM pagrindu veikiantį neuroninį tinklą atpažįsta automobilio numerius (žiūrėti priede \ref{detect}).
+
+Atpažinimo pavyzdžius galima pamatyti \ref{DGZ473} pav., \ref{EV0741} pav., \ref{FON550} pav., \ref{JPC320} pav., \ref{KTP049} pav., \ref{KZF273} pav., \ref{LAN285} pav.
+
+Pavyzdžiai:
+\newline
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/dgz473.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{DGZ473}.}
+  \label{DGZ473}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/ev0741.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{EV0741}.}
+  \label{EV0741}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/fon550.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{FON550}.}
+  \label{FON550}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/jpc320.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{JPC320}.}
+  \label{JPC320}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/ktp049.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{KTP049}.}
+  \label{KTP049}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/kzf273.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{KZF273}.}
+  \label{KZF273}
+\end{subfigure}
+\begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[width=6cm]{cars/lan285.jpg}
+  \captionof{figure}{Tikimasis rezultatas \textbf{LAN285}.}
+  \label{LAN285}
+\end{subfigure}
+
 
 
 \pagebreak
 \sectionnonum{Rezultatai}
---TODO 20min
-\begin{enumerate}
-  \item Pasinaudojus paveikslėlių duomenų rinkiniu susigeneruoti 100.000 atsitiktinių paveikslėlių su automobilio numeriais.
-  \item Apmokyti kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą (rėmelio atpažinimui) pateikiant sugeneruotus paveikslėlius.
-  \item Apmokyti Tesseract LSTM rekurentinį neuroninį tinklą (teksto atpažinimui) pateikiant sugeneruotus paveikslėlius.
-  \item Pasinaudojus kursinio darbo metu sukurtu ir apmokytu konvoliuciniu neuroniniu tinklu atpažinti numerio rėmelį paveikslėlyje ir gauti jo koordinates.
-  \item Pagal gautas koordinates, iškirpti rėmelį ir pasinaudojus Tesseract LSTM neuroniniu tinklu atpažinti numerį bei atvaizduoti gautus rezultatus pradiniame paveikslėlyje.
-  \item Ištestuoti tinklą su tikrais paveikslėliais, kuriuose yra lietuviški automobilių numeriai.
+\begin{enumerate}%[itemsep=0.5pt]
+  \item Sugeneruota 100.000 paveikslėlių, skirtų apmokyti neuroninį tinklą.
+  \item Apmokytas kursinio darbo metu sukurtas neuroninis tinklas su 100.000 sugeneruotų paveikslėlių.
+  \item Apmokytas modifikuotas Tesseract LSTM rekurentinis neuroninis tinklas panaudojant sugeneruotus paveikslėlius.
+  \item Parašyta programa, kuri gauna rėmelio koordinates iš paveikslėlio, kuriame yra numeris, pasinaudojus neuroniniu tinklu.
+  \item Parašyta programa, kuri iškerpa rėmelį pagal koordinates ir pasinaudojus modifikuotu Tesseract LSTM rekurentiniu neuroniniu tinklu atpažįsta numerį bei atvaizduoja pradiniame paveikslėlyje.
+  \item Tinklas ištestuotas su tikrais paveikslėliais, kuriose yra lietuviški automobilių numeriai.
 \end{enumerate}
 
 \sectionnonum{Išvados}
---TODO 20min
-Išvadų skyriuje daromi nagrinėtų problemų sprendimo metodų palyginimai, siūlomos
-rekomendacijos, akcentuojamos naujovės. Išvados pateikiamos sunumeruoto (gali būti
-hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą. 
+Darbe buvo nagrinėta kaip išspręsti vaizdo atpažinimo problemą naudojantis neuroniniais tinklais.
 
+Išnagrinėta kaip veikia konvoliucinis neuroninis tinklas, kaip generuoti duomenis jo apmokymui,
+kaip sudaryti neuroninio tinklo lygius, kaip apmokyti tinklą su sugeneruotais duomenimis bei kaip
+jį pritaikyti sukurtoje programoje, kurį geba iškirpti numerio rėmelį nuotraukoje.
+
+Padaryta išvada, kad įmanoma sukurti konvoliucinį neuroninį tinklą, kuris geba nuotraukoje
+identifikuoti numerio rėmelį bei jį iškirpti. Norint efektyvinti atpažinimą, reiktų išbandyti 
+daugiau neuroninių tinklų rūšių bei rasti efektyviausią.
+
+Taip pat nagrinėtas rekurentinis neuroninis tinklas, o tiksliau, Tesseract atviro kodo 
+programos 4.00 versija. Panaudotas naujas metodas, kuris naudoja LSTM architektūros
+neuroninį tinklą. Sudarytas neuroninis tinklas bei parašyta programa kuri geba 
+atpažinti raides ir skaičius.
+
+Padaryta išvada, kad Tesseract LSTM yra tinkamas įrankis atpažinti tekstą nuotraukose,
+turi daug konfigūracijos galimybių ir pakankamai lengvai galima susikurti neuroninio
+tinklo modelį.
 \pagebreak
 \printbibliography[heading=bibintoc]
 
@@ -1074,30 +1156,28 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
 \sectionnonum{Sąvokų apibrėžimai}
 \begin{itemize}
   \item Tesseract - optinė ženklų atpažinimo programa, kuri geba naudoti neuroninius tinklus atpažinimui.
-  \item Leptonica
-  \item Tensorflow
-  \item OpenMP
+  \item Leptonica - atviro kodo programinė įranga, skirta dirbti su paveikslėliais.
+  \item Tensorflow - atviro kodo matematinė programinė įranga, naudojama darbui su neuroniais tinklais.
+  \item OpenMP - programavimo standartas, skirtas realizuoti lygiagretiesiems algoritmams bendros atminties kompiuteriuose.
   \item Tenzorius - geometrinis objektas, susidedantis iš sumos komponenčių, kurios yra transformuojamos pagal tiesinius sąryšius.
-  \item Softmax
-  \item Relu
-  \item Plumbing
-  \item Maxpool
+  \item Softmax - normalizuota eksponentinė funkcija, naudojama neuroniniuose tinkluose kaip aktyvacijos funkcija.
+  \item Relu - funkcija, naudojama neuroniniuose tinkluose kaip aktyvacijos funkcija.
+  \item Maxpool - konvoliucinių neuroninių tinklų operacija skirta sumažinti sluoksnio dimensijų skaičių.
 \end{itemize}
 
 \sectionnonum{Santrumpos}
---TODO
 \begin{itemize}
   \item LSTM - trumpinys angl. Long short-term memory - rekurentinio neuroninio tinklo architektūra.
-  \item TIFF
-  \item DPI
-  \item PNG
-  \item OSD
-  \item OCR
-  \item VGSL
-  \item SSE
-  \item AVX
-  \item SIMD
-  \item CTC - %https://en.wikipedia.org/wiki/Connectionist_temporal_classification
+  \item TIFF - trumpinys angl. Tagged Image File Format - atvaizdų failų formatas, kuriame informacija nėra suspaudžiama.
+  \item DPI - trumpinys angl. Dots per inch - matavimo vienetas žymintis pikselius viename colyje.
+  \item PNG - trumpinys angl. Portable Network Graphics – bitų masyvo formatas, kuris suglaudinamas „be nuostolių“. 
+  \item OSD - trumpinys angl. Orientation and script detection - Tesseract programos atpažinimo būdas, atpažįstantis pakrypimą ir raštą.
+  \item OCR - trumpinys angl.  Optical Character Recognition - Optinis ženklų atpažinimas.
+  \item VGSL - trumpinys angl. Variable-size Graph Specification Language - Kintamo dydžio grafų aprašymo kalba.
+  \item SSE - Kompiuterio procesoriaus registras.
+  \item AVX - Kompiuterio procesoriaus registras.
+  \item SIMD - trumpinys angl. Single instruction, multiple data - lygiagretaus programavimo terminas apibūdinantis kai viename kompiuteryje keletas procesorių vykdo tą pačią operaciją ant skirtingų duomenų.
+  \item CTC - trumpinys angl. Connectionist temporal classification - rekurentinio neurinio tinklo išvesties tipas.
 \end{itemize}
 
 \appendix  % Priedai
@@ -1109,7 +1189,7 @@ hierarchinis) sąrašo pavidalu. Darbo išvados turi atitikti darbo tikslą.
 \lstinputlisting[language=Python,label=generating]{generate.py}
 
 \section{Makefile failas skirtas treniruoti Tesseract 4.00 versijos neuroninį tinklą}
-\lstinputlisting[language=Python,label=makefile]{ocrd/Makefile}
+\lstinputlisting[language=Python,label=makefile]{ocrd/Makefile.txt}
 
 \section{Programa atpažįstanti automobilio numerius}
 \lstinputlisting[language=Python,label=detect]{platesOCR.py}
