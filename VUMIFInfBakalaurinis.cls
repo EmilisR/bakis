@@ -256,7 +256,7 @@
 
 \def\@Appendix[#1]#2{%
     \refstepcounter{section}%
-    \cftaddtitleline{toc}{section}{Priedas Nr.\arabic{section}}{}
+    %\cftaddtitleline{toc}{section}{Priedas Nr.\arabic{section}}{}
     {\large\bfseries\appendixname\ \thesection\par
      #2\par}%
     \sectionmark{#1}\vspace{\baselineskip}%

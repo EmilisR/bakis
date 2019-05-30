@@ -59,7 +59,7 @@
 \lstset{style=mystyle}
 \begin{document}
 \maketitle
-
+\setcounter{page}{2}
 \sectionnonumnocontent{Santrauka}
 % Santraukose lietuvių ir anglų kalbomis glaustai aprašomas darbo turinys: pristatoma
 % nagrinėta problema ir padarytos išvados. Santraukų gale nurodomi darbo raktiniai žodžiai.
@@ -128,7 +128,7 @@ rekurentinį neuroninį tinklą, kuris sugebės atpažinti automobilio numerio s
 Sukurti programą, kuri gebėtų atpažinti lietuviškus automobilio numerius paveikslėlyje panaudojant Tesseract LSTM rekurentinį neuroninį tinklą.
 
 \sectionnonumnocontent{Uždaviniai}
-\begin{enumerate}
+\begin{enumerate}[itemsep=0.5pt]
   \item Pasinaudojus paveikslėlių duomenų rinkiniu susigeneruoti 100.000 atsitiktinių paveikslėlių su automobilio numeriais.
   \item Apmokyti kursinio darbo metu sukurtą konvoliucinį neuroninį tinklą (rėmelio atpažinimui) pateikiant sugeneruotus paveikslėlius.
   \item Apmokyti Tesseract LSTM rekurentinį neuroninį tinklą (teksto atpažinimui) pateikiant sugeneruotus paveikslėlius.
@@ -161,7 +161,7 @@ darbe sukurtą bei modifikuotą Tesseract LSTM neuroninio tinklo konfigūraciją
 \sectionnonumnocontent{Eksperimente naudojami instrumentai}
 Atlikti šiam eksperimentui buvo naudojami šie pagrindiniai įrankiai:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Tesseract - skirta atpažinti numeryje esančius simbolius.
   \item Python - programavimo kalba naudota kurti programoms.
   \item TensorFlow - skirta neuroninio tinklo pagalba atpažinti numerio rėmelį nuotraukoje.
@@ -173,7 +173,7 @@ Atlikti šiam eksperimentui buvo naudojami šie pagrindiniai įrankiai:
 
 \subsection{Rėmelio atpažinimui skirtų duomenų generavimas} \label{Mokymo duomenų generavimas}
 Norint sukurti realiai veikiančią programą, kuri naudotų neuroninį tinklą išgauti tikėtinam rezultatui,
-tinklą reikia apmokyti su dideliu kiekiu duomenų. Apmokant bet kokį neuroninį tinklą turi būti būti pateiktas
+tinklą reikia apmokyti su dideliu kiekiu duomenų. Apmokant bet kokį neuroninį tinklą turi būti pateiktas
 duomenų rinkinys su norimu gauti rezultatu. 
 
 \subsubsection{Pirminis duomenų generavimo variantas}
@@ -245,7 +245,7 @@ visas paveikslėlis.
 
 \begin{minipage}{\linewidth}
   \centering
-  \includegraphics[width=10cm]{train_images/generating.png}
+  \includegraphics[width=8cm]{train_images/generating.png}
   \captionof{figure}{Paveikslėlių generavimo schema}
   \label{gen_img}
 \end{minipage}
@@ -256,9 +256,9 @@ Numeris generuojamas pagal Lietuvos Respublikos Valstybinių numerių formatą, 
 raidės (išskyrus lietuvių kalboje nenaudojamas raides) ir 3 arabiški skaičiai. Generuojant numerį, 
 atsitiktine tvarka parenkamos trys raidės iš 23 raidžių žodyno \textit{ABCDEFGHIJKLMNOPRSTUVYZ} bei 3 skaičiai 
 iš skaičių žodyno \textit{0123456789}. Maksimalus galimas unikalių numerių skaičius siekia:
-\begin{equation*}
+\begin{equation}
   23^3 * 10^3 = 12.167.000.
-\end{equation*}
+\end{equation}
 
 \subsubsubsection{Transformacija}
 
@@ -268,15 +268,15 @@ reikšmes X, Y, Z ašims ir pritaikyti Oilerio kampų metodą\cite{slabaugh1999c
 Reikšmių rėžiai pasirinkti tokie, kuriuos labiausiai tikėtina sutikti realiame pasaulyje.
 Kaip atrodo transformacija galima matyti \ref{gen_img} paveikslėlyje.
 Ašių atsitiktinių reikšmių rėžiai:
-\begin{equation*}
+\begin{equation}
   -0.3 \leq X \leq 0.3,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   -0.2 \leq Y \leq 0.2,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   -1.2 \leq Z \leq 1.2.
-\end{equation*}
+\end{equation}
 
 Transformacijos vykdomos 3 etapais (programinis kodas matomas \ref{euler_img} pav.):
 \begin{enumerate}[itemsep=0.5pt]
@@ -284,41 +284,41 @@ Transformacijos vykdomos 3 etapais (programinis kodas matomas \ref{euler_img} pa
   \begin{itemize}[itemsep=0.5pt]
     \item Apskaičiuojamos cos(Y) ir sin(y) reikšmės,
     \item Sudaroma 3x3 matrica su reikšmėmis,
-    \begin{equation*}
+    \begin{equation}
       \begin{bmatrix}
         c & 0 & s \\
         0 & 1 & 0 \\
         -s & 0 & c
       \end{bmatrix}
       .
-    \end{equation*}
+    \end{equation}
   \end{itemize}
   \item Sukama aplink X ašį
   \begin{itemize}[itemsep=0.5pt]
     \item Apskaičiuojamos cos(X) ir sin(X) reikšmės,
     \item Sudaroma 3x3 matrica su reikšmėmis,
-    \begin{equation*}
+    \begin{equation}
       \begin{bmatrix}
         1 & 0 & 0 \\
         0 & c & -s \\
         0 & s & c
       \end{bmatrix}
       .
-    \end{equation*}
+    \end{equation}
     \item Sudauginama su praeitame žingsnyje gauta matrica
   \end{itemize}
   \item Sukama aplink Z ašį
   \begin{itemize}[itemsep=0.5pt]
     \item Apskaičiuojamos cos(Z) ir sin(Z) reikšmės,
     \item Sudaroma 3x3 matrica su reikšmėmis, 
-    \begin{equation*}
+    \begin{equation}
       \begin{bmatrix}
         c & 0 & s \\
         0 & 1 & 0 \\
         -s & 0 & c
       \end{bmatrix}
       ,
-    \end{equation*}
+    \end{equation}
     \item Sudauginama su praeitame žingsnyje gauta matrica.
   \end{itemize}
 \end{enumerate}
@@ -336,60 +336,60 @@ Transformuotas automobilio numerio rėmelis sukomponuojamas su atsitiktiniu pave
 Atsitiktinių paveikslėlių šaltiniu naudojamas daugiau nei 100.000 paveikslėlių duomenų rinkinys \cite{xiao2010sun}.
 Labai svarbu didelis kiekis paveikslėlių, taip sumažinant riziką, kad neuroninis tinklas atsimins kiekvieną paveikslėlį.
 Kaip atrodo kompozicija galima matyti \ref{gen_img} paveikslėlyje.
-\begin{equation*}
+\begin{equation}
   A = 0.6,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   B = 0.875,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   C = 1.5.
-\end{equation*}
+\end{equation}
 kur:
 \begin{itemize}[itemsep=0.5pt]
   \item A - minimalus numerio rėmelio plotis,
   \item B - maksimalus numerio rėmelio aukštis,
   \item C - dydžio variacijos koeficientas.
 \end{itemize}
-\begin{equation*}
+\begin{equation}
   min = (A + B) * 0.5 - (B - A) * 0.5 * C,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   min = ((0.6 + 0.875) * 0.5) - ((0.875 - 0.6) * 0.5 * 1.5),
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   min = (1.475 * 0.5) - (0.275 * 0.5 * 1.5),
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   min = 0.7375 - 0.20625,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   \textbf{min = 0.53125},
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   max = (A + B) * 0.5 + (B - A) * 0.5 * C,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   max = ((0.6 + 0.875) * 0.5) + ((0.875 - 0.6) * 0.5 * 1.5),
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   max = (1.475 * 0.5) + (0.275 * 0.5 * 1.5),
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   max = 0.7375 + 0.20625,
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   \textbf{max = 0.94375},
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   x = R[min, max],
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   p = 1, \text{kai } x \in [A, B],
-\end{equation*}
-\begin{equation*}
+\end{equation}
+\begin{equation}
   p = 0, \text{kai } x \in [A, B].
-\end{equation*}
+\end{equation}
 kur:
 \begin{itemize}[itemsep=0.5pt]
   \item min - minimalus generuojamas dydžio koeficientas,
@@ -430,7 +430,7 @@ Kai kuriems simboliams reikėjo pritaikyti transformacijas, kad jų orientacija 
 \subsubsection{Generavimo algoritmas}
 Generuoti atsitiktiniams automobilio numeriams parašyta Python programėlė (žiūrėti priede \ref{generating}).
 Veikimo eiga:
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Masyve \textit{letters} saugomi paveikslėliai atitinkantys raides.
   \item Masyve \textit{numbers} saugomi paveikslėliai atitinkantys skaičius.
   \item Sukamas ciklas \textit{N} kartų.
@@ -463,9 +463,9 @@ Po pirmojo konvoliucinio lygio pritaikyta neuronų atmetimo operacija, norint ne
 Po trečiojo konvoliucinio lygio taip pat pritaikyta neuronų atmetimo operacija, norint padidinti neuroninio tinklo tikslumą, 
 kadangi pastebėta, kad ignoruojant 50\% neuronų, tinklas turi didesnį atpažinimo tikslumą\cite{stark2015captcha}.
 Kiekvieno mokymo ciklo metu imties dydis yra 50. Galutinis tinklo išvedamas rezultatas yra:
-\begin{equation*}
+\begin{equation}
   0 \leq x \leq 1, x \in N.
-\end{equation*}
+\end{equation}
 
 Neuroninį tinklą sudaro:
 
@@ -524,20 +524,32 @@ Tai sprendžia vieną iš LSTM modelio silpnybių, kai įvestis nėra suskirstyt
 Atminties praradimo vartai keičia vidinę ląstelės būseną prieš patalpinant ją į ląstelę per rekurentinį ryšį su pačia savim,
 tuo pačiu įgalinant pamiršti ar ištrinti ląstelės atmintį.
 LSTM tinklas skaičiuoja sąryšius nuo įvesties sekos
-\begin{equation*}
+\begin{equation}
   x = (x1, ..., xT) 
-\end{equation*}
+\end{equation}
 iki išvesties sekos
-\begin{equation*}
+\begin{equation}
   y = (y1, ..., yT)
-\end{equation*}
+\end{equation}
 atlikdamas tinklo vienetų aktyvacijų funkcijas pagal žemiau nurodytas formules iš eilės nuo t = 1 iki T:
-\[i_t = \sigma(W_{ix}x_t + W_{im}m_{t−1} + W_{ic}c_{t−1} + b_i) (1)\]
-\[f_t = \sigma(W_{fx}x_t + W_{fm}m_{t−1} + W_{fc}c_{t−1} + b_f) (2)\]
-\[c_t = f_t \odot c_{t−1} + i_t\odot g(W_{cx}x_t + W_{cm}m_{t−1} + b_c) (3)\]
-\[o_t = \sigma(W_{ox}x_t + W_{om}m_{t−1} + W_{oc}c_t + b_o) (4)\]
-\[m_t = o_t \odot h(c_t) (5)\]
-\[y_t = \phi(W_{ym}m_t + b_y) (6)\]
+\begin{equation}
+  i_t = \sigma(W_{ix}x_t + W_{im}m_{t−1} + W_{ic}c_{t−1} + b_i)
+\end{equation}
+\begin{equation}
+  f_t = \sigma(W_{fx}x_t + W_{fm}m_{t−1} + W_{fc}c_{t−1} + b_f)
+\end{equation}
+\begin{equation}
+  c_t = f_t \odot c_{t−1} + i_t\odot g(W_{cx}x_t + W_{cm}m_{t−1} + b_c)
+\end{equation}
+\begin{equation}
+  o_t = \sigma(W_{ox}x_t + W_{om}m_{t−1} + W_{oc}c_t + b_o)
+\end{equation}
+\begin{equation}
+  m_t = o_t \odot h(c_t)
+\end{equation}
+\begin{equation}
+  y_t = \phi(W_{ym}m_t + b_y)
+\end{equation}
 kur \textit{W} apibrėžia svorių matricas (pvz.: \(W_{ix}\) yra svorių matrica nuo įvesties vartų iki pačios įvesties), 
 \(W_{ic}\), \(W_{fc}\), \(W_{oc}\) yra įstrižos svorių matricos skirtos skylučių jungtims
 \footnote{Skylutės jungtis (angl. peephole connection) - LSTM tinklo ypatybė, kai vartai priklausoma ne tik nuo buvusios paslėptos būsenos, bet ir nuo buvusios vidinės būsenos)},
@@ -571,7 +583,7 @@ Nuo 4.00 versijos neuronio tinklo pagrindu veikiantis atpažinimo būdas Tessera
 Nauja programos versija naudoja iki 10 kartų daugiau kompiuterio procesoriaus resursų nei senesnės Tesseract versijos, 
 tačiau jei naudojamas kompiuteris ir platforma palaiko žemiau aprašytas funkcijas, resursų naudojimas gali sumažėti:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item \textit{OpenMP} leidžia naudoti iki 4 procesoriaus branduolių vienu metu, jei juos procesorius turi.
   \item \textit{Intel/AMD} procesoriai, kurie palaiko \textit{SSE} ir/ar \textit{AVX} technologiją, turi pranašumą naudojant \textit{SIMD} branduolio matricų daugybos operacijų išlygiagretinimą.
   \item Kompiuteryje, kuris turi bent 4 branduolius, \textit{AVX}, nesudėtingą anglų kalbos tekstą paveikslėlyje, atpažinimas užtrunka dvigubai ilgiau bei naudoja 7 kartus daugiau procesoriaus resursų nei ankstesnės versijos, nors Hindi kalbos atpažinimas trunka netgi greičiau nei senesnėse versijose bei naudoja tik nežymiai daugiau procesoriaus resursų.
@@ -586,7 +598,7 @@ Visi neuroninio tinklo lygių tipai yra paveldėti iš bazinės \textit{Network}
 \subsubsection{Naujo tinklo lygio pridėjimas}
 Naujas tinklo lygis turi būti paveldimas iš klasės \textit{Network} ar \textit{Plumbing} ir įgyvendinti bent vieną virtualų metodą:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item \textit{spec}, kuris grąžina \textit{String} tipo eilutę, kuri buvo naudojama sukurtį šiam tinklo lygiui.
   \item \textit{Serialize/DeSerialize} - skirtas išsaugoti/atkurti tinklo lygį iš/į failą.
   \item \textit{Forward} - skirtas treniravimo metu vykdyti tinklo lygį nurodant kryptį į priekį.
@@ -596,7 +608,7 @@ Naujas tinklo lygis turi būti paveldimas iš klasės \textit{Network} ar \texti
 Lygiai, kurie turi svorius taip pat turi įgyvendinti \textit{Update} metodą, kuris atnaujina svorius naudodamas rinkinį nuolydžių.
 Taip pat yra keletas kitų metodų, kurie turėtų būti įgyvendinti, priklausomai nuo specifinių tinklo lygio reikalavimų:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item \textit{NetworkBuilder} klasė turi būti pakeista, kad būtų galima apdoroti naujo tipo specifikaciją.
   \item \textit{NetworkType} klasifikatorius turi būti papildytas nauju tipu.
   \item Naujo tipo atitinkamas įrašas turi būti pridėtas į lauką \textit{Network::kTypeNames}.
@@ -611,7 +623,7 @@ susidarantį iš konvoliucijų ar LSTM tinklo ypatybių, kuris gali apdoroti kin
 \sectionnonumnocontent{VGSL pritaikymas}
 VGSL kalba sukurta aprašyti neuroniniems tinklams, kurie:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Kintamo dydžio (tinka ir fiksuoto dydžio) paveikslėlius naudoja kaip įvestį (vienoje ar dvejose dimensijose).
   \item Gauna rezultatą kaip reikšmių matricą, tekstą ar kategoriją.
   \item Konvoliucijos ir LSTM tinklai yra pagrindinis skaičiavimo komponentas.
@@ -621,9 +633,7 @@ VGSL kalba sukurta aprašyti neuroniniems tinklams, kurie:
 Neuroninio tinklo modelį aprašo teksto eilutė, kurioje yra aprašomos įvesties, išvesties ir tinklo lygių specifikacijos. 
 Pavyzdys: 
 
-\begin{verbatim}
-  [1,0,0,3 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]
-\end{verbatim}
+\textbf{\textit{[1,0,0,3 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]}}
 
 Pirmi 4 numeriai aprašo įvesties dydį ir tipą. Tai atitinka TensorFlow sistemos paveikslėlio tenzoriaus konvenciją: [paketas, aukštis, plotis, gylis].
 Šiuo atveju paketas yra ignoruojamas, bet gali būti panaudotas aprašant treniravimo paketo dydį.
@@ -633,9 +643,9 @@ Gylio reikšmė 1 nurodo, kad paveikslėlis yra juodai baltas, reikšmė 3 nurod
 Yra specialus atvejis, kai nurodomas gylis su kitokia reikšme nei 1 ar 3 ir aukščiu - 1. Tokiu atveju tai bus traktuojama kaip vertikalių pikselių juostų seka.
 Paskutinis žodis nurodo apibūdina išvestį:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Bendrinis išvesties formatas su n klasių - \textit{O(2|1|0)(l|s|c)n}:
-  \begin{itemize}
+  \begin{itemize}[itemsep=0.5pt]
     \item \textit{2} (reikšmių matrica) - išvestis yra dviejų dimensijų įvesties vektorių žemėlapis.
     \item \textit{1} (seka) - išvestis yra vienos dimensijos vektoriaus reikšmių seka.
     \item \textit{0} (kategorija) - išvestis yra vieno vektoriaus reikšmė.
@@ -652,13 +662,13 @@ Paskutinis žodis nurodo apibūdina išvestį:
 \textbf{Funkcinės operacijos}
 Egzistuoja 5 skirtingos funkcinės operacijos:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item C(s|t|r|l|m)<y>,<x>,<d> - vykdoma konvoliucija naudojant y, x langelį, nenaudojant sutraukimo, su atsitiktiniu užpildu, d išvestimi bei \textit{s|t|r|l|m} aktyvavimo funkcija.
   \item F(s|t|r|l|m)<d> - pilnai jungus lygis su \textit{s|t|r|l|m} aktyvavimo funkcija ir d išvestimi.
   Sumažina aukštį ir plotį iki 1. Susijungia su kiekviena įvesties y, x bei gylio pozicija, sumažindamas aukštį, plotį iki 1 ir sugeneruodamas <d> vektorių kaip išvestį.
   Įvesties aukštis ir plotis turi būti konstantos.
   \item L(f|r|b)(x|y)[s]<n> - LSTM ląstelė su n išvesčių:
-  \begin{itemize}
+  \begin{itemize}[itemsep=0.5pt]
     \item \textit{f} - leidžia tik į priekį judantį LSTM lygį.
     \item \textit{r} - leidžia tik priešinga kryptimi judantį LSTM lygį.
     \item \textit{b} - leidžia abiejomis kryptimis judantį LSTM lygį.
@@ -671,7 +681,7 @@ Egzistuoja 5 skirtingos funkcinės operacijos:
 
 Aukščiau paminėtos raidės \textit{(s|t|r|l|m)} reiškia vieną iš aktyvacijos funkcijų:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item \textit{s} - sigmoido funkcija.
   \item \textit{t} - hiperbolinio tangento funkcija.
   \item \textit{r} - \textit{Relu} funkcija.
@@ -681,7 +691,7 @@ Aukščiau paminėtos raidės \textit{(s|t|r|l|m)} reiškia vieną iš aktyvacij
 
 Pavyzdžiai:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Cr5,5,32 - 5x5 Relu konvoliucija su 32 filtrais.
   \item Lfx128 - tik į priekį judantis LSTM lygis, x dimensijoje turintis 128 išvestis, laikydamas y dimensiją nepriklausoma.
   \item Lfys64 - tik į priekį judantis LSTM lygis, y dimensijoje turintis 64 išvestis, laikydamas x dimensiją nepriklausoma ir sutraukdamas y dimensiją iki 1 elemento.
@@ -690,7 +700,7 @@ Pavyzdžiai:
 \textbf{Plumbing ops}
 \textit{Plumbing} operacijos leidžia konstruoti pakankamai kompleksiškus grafus:
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item {[...]} - Vykdyti ... neuroninius tinklus nuosekliai lygiais.
   \item (...) - Vykdyti ... neuroninius tinklus lygiagrečiai, jungiant jų išvestis į gylį.
   \item S<y>,<x> - Pakeisti dviejų dimensijų įvestį susitraukimo koeficientu y,x, sutvarkant duomenis padidinant įvesties gylį koeficientu xy.
@@ -699,13 +709,11 @@ Pavyzdžiai:
 
 \textbf{Pavyzdys: Vienos dimensijos LSTM tinklas, galintis tiksliai atpažinti tekstą}
 
-\begin{verbatim}
-  [1,1,0,48 Lbx256 O1c105]
-\end{verbatim}
+\textbf{\textit{[1,1,0,48 Lbx256 O1c105]}}
 
 Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item O1c105: Išvesties lygis, pagaminantis vienos dimensijos seką, treniruotą su CTC, išvedantis 105 klases.
   \item Lbx256: Dvikryptis LSTM lygis judantis x kryptimi su 256 išvestimis.
   \item 1,1,0,48: Įvestis yra juodai baltas paveikslėlis, kurio aukštis yra 48 pikseliai, laikomas kaip vienos dimensijos vertikalių pikselių seka.
@@ -716,13 +724,11 @@ Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
 \textbf{Pavyzdys: Keletos lygių LSTM tinklas, galintis tiksliai atpažinti tekstą}
 
-\begin{verbatim}
-  [1,0,0,1 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]
-\end{verbatim}
+\textbf{\textit{[1,0,0,1 Ct5,5,16 Mp3,3 Lfys64 Lfx128 Lrx128 Lfx256 O1c105]}}
 
 Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item O1c105: Išvesties lygis, pagaminantis vienos dimensijos seką, treniruotą su CTC, išvedantis 105 klases.
   \item Lfx256: Tik pirmyn judantis LSTM lygis x kryptimi su 256 išvestimis.
   \item Lrx128: Tik priešingai judantis LSTM lygis x kryptimi su 128 išvestimis.
@@ -748,13 +754,11 @@ Apibendrinantis LSTM lygis taip pat gali būti naudojamas su fiksuoto aukščio 
 \subsubsection{Modelis}
 Šiam konkrečiam uždaviniui, kuris turi atpažinti automobilio numerio simbolius, pasirinktas tokios konfigūracijos neuroninis LSTM tinklas:
 
-\begin{verbatim}
-  [1,36,0,1 Ct3,3,16 Mp3,3 Lfys48 Lfx96 Lrx96 Lfx256 O1c`head -n1 data/unicharset`]
-\end{verbatim}
+\textbf{\textit{[1,0,0,1 Ct3,3,16 Mp3,3 Lfys48 Lfx96 Lrx96 Lfx256 O1c`head -n1 data/unicharset`]}}
 
 Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item O1c`head -n1 data/unicharset`: Išvesties lygis, pagaminantis vienos dimensijos seką, treniruotą su CTC, išvedantis n klasių nurodytų faile esančiame \textit{data/unicharset}.
   \item Lfx256: Tik pirmyn judantis LSTM lygis x kryptimi su 256 išvestimis.
   \item Lrx96: Tik priešingai judantis LSTM lygis x kryptimi su 96 išvestimis.
@@ -762,7 +766,7 @@ Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
   \item Lfys48: Lfys64: Dimensiją apibendrinantis LSTM lygis, apibendrinantis y dimensiją su 48 išvestimis.
   \item Mp3,3: 3x3 \textit{Maxpool} operacija.
   \item Ct3,3,16: 3x3 konvoliucija su 16 išvesčių ir hiperbolinio tangento aktyvacijos funkcija.
-  \item 1,36,0,1: Įvestis yra juodai baltas paveikslėlis, kurio aukštis 36 pikseliai.
+  \item 1,0,0,1: Įvestis yra juodai baltas paveikslėlis.
 \end{itemize}
 
 \pagebreak
@@ -804,7 +808,7 @@ trukdavo nuo kelių minučių iki kelių valandų, tai su nauja 4.00 versija tai
 Tačiau ne visais atvejais yra naudinga treniruoti modelį nuo pradžių, priklausomai nuo situacijos, kartais užtenka pertreniruoti egzistuojantį modelį.
 
 Išskiriami trys pagrindiniai modelio apmokymo principai:
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Esamo modelio patobulinimas. Naudojant egzistuojantį pasirinktos kalbos modelį, papildomai apmokomas su papildomais specifiniais duomenimis.
   Tai gali išspręsti problemas, kai norimas rezultatas nedaug skiriasi nuo jau apmokyto modelio, pvz.: truputį nestandartinis šriftas.
   Gali veikti su sąlyginai mažu naujų duomenų kiekiu.
@@ -833,9 +837,8 @@ prieš siunčiant apdorojimui.
 \sectionnonumnocontent{Spalvų inversija}
 Nors senesnės Tesseract versijos (<= 3.05) palaikė šviesų tekstą ant juodo fono be jokių problemų, nuo 4.00 versijos būtina sąlyga, kad tekstas būtų juodas, o fonas šviesus.
 Tam tikslui atlikti užtenka vienos komandos:
-\begin{verbatim}
-  numpy.invert(image)
-\end{verbatim}
+
+\textbf{\textit{numpy.invert(image)}}
 
 \sectionnonumnocontent{Dydžio keitimas}
 Tesseract programa geriausiai veikia, kai paduodamų paveikslėlių taškų viename colyje (angl. DPI) dydis yra bent 300, todėl labai svarbu užtikrinti, kad dydis nebūtų mažesnis.
@@ -854,7 +857,7 @@ Binarizacija - tai paveiksliuko spalvų keitimas į juodą ir baltą. Tesseract 
 tačiau ne visada rezultatas gaunasi optimalus. Tai dažniausiai lemia netolygus fono tamsumas.
 
 Jei nepavyksta išgauti geresnės kokybės nuotraukos, kuriame fono spalva būtų tolygi, yra alternatyvių ribinių verčių nustatymo algoritmų, kuriuos vertėtų išbandyti:
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item \textit{ImageJ} automatinis ribinių verčių nustatymo algoritmas (JAVA programavimo kalba).
   \item \textit{OpenCV} ribinių verčių nustatymo algoritmas (Python programavimo kalba).
   \item \textit{scikit-image} ribinių verčių nustatymo algoritmas (Python programavimo kalba).
@@ -907,9 +910,7 @@ Tai dažnai gali būti atpažįstami kaip papildomi simboliai, ypač jei skirias
 Jei norimas atpažinti tekstas visiškai neturių kraštinių ir yra nuo krašto iki krašto, Tesseract programa gali turėti sunkumų bandant atpažinti tekstą.
 Panaudojant vieną komandą, lengvai galima pridėti kraštines iš visų pusių (naudojama \textit{ImageMagick®} programa):
 
-\begin{verbatim}
-  convert  input.jpg  -bordercolor White -border 10x10 output.jpg
-\end{verbatim}
+\textbf{\textit{convert  input.jpg  -bordercolor White -border 10x10 output.jpg}}
 
 \sectionnonumnocontent{Permatomumas / alfa kanalas}
 Kai kurie paveikslėlių formatai (pvz.: png) turi alfą kanalą, kuris suteikia galimybę saugoti permatomumo reikšmę nuotraukoje.
@@ -918,9 +919,7 @@ Alfa kanalu dažniausiai nusakomas paveikslėlio skaidrumas. Paprastai prie 24 n
 
 Tesseract 3.0x versijos tikisi, kad pats vartotojas pateiks paveiksliuką jau su panaikinta alfa kanalu. Tai gali būti padaroma su tokia komanda (naudojama \textit{ImageMagick®} programa):
 
-\begin{verbatim}
-  convert input.png -alpha off output.png
-\end{verbatim}
+\textbf{\textit{convert input.png -alpha off output.png}}
 
 Tesseract 4.00 versijoje yra funkcionalumas, kuris pats pašalina alfa kanalą naudojant \textit{Leptonica} programos komandą \textit{pixRemoveAlpha()}. Ši komanda panaikina alfa kanalą
 suliedama jį su baltu fonu. Kartais (pvz.: filmų subtitrų atpažinimas) tai gali sukelti problemų, todėl vartotojai turėtų patys panaikinti alfa kanalą arba pritaikyti spalvų inversiją.
@@ -930,7 +929,7 @@ Tesseract programos standartinis veikimo principas pagrįstas tuo, kad programa 
 pavidalu su jame esančiu tekstu. Tačiau, jei norima atpažinti tik dalį teksto, yra įvairiausių teksto skirstymo 
 parametrų, kurį reikia nurodyti naudojant komandą \textit{--psm} ir nurodant komandos numerį.
 
-\begin{enumerate}
+\begin{enumerate}[itemsep=0.5pt]
   \setcounter{enumi}{-1}
   \item Orientacija ir rašto aptikimas (OSD).
   \item Automatinis puslapio skirstymas su rašto aptikimu (OSD).
@@ -965,7 +964,7 @@ Be žodžių, yra galimybė prisidėti simbolių sekų šablonus, kurie dar labi
 \subsubsection{Rinkmenų pasiruošimas}
 Bendrai mokymo žingsniai yra tokie:
 
-\begin{enumerate}
+\begin{enumerate}[itemsep=0.5pt]
   \item Pasiruošti norimą apmokyti tekstą.
   \item Sugeneruoti paveiksliuką su tekstu + \textit{box} failu.
   \item Sukurti \textit{unicharset} failą.
@@ -977,7 +976,7 @@ Bendrai mokymo žingsniai yra tokie:
 
 Norint atlikti LSTM rekurentinio tinklo mokymą Tesseract 4.0 versijos aplinkoje, reikia susigeneruoti atitinkamo formato mokymo rinkmenas.
 Kiekvienas sugeneruotas automobilio numeris turi turėti 5 skirtingus rinkmenas:
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item .box formato - rinkmena, kurią sugeneruoja priede \ref{generate_line_box} pridėta programa.
   \item .lstmf formato - rinkmena, kurią sugeneruoja priedo \ref{makefile} komanda: lists. 
   \item .gt.txt formato - tekstinė rinkmena, kurioje yra tekstas, kuris yra pavaizduotas paveikslėlyje.
@@ -988,16 +987,15 @@ Kiekvienas sugeneruotas automobilio numeris turi turėti 5 skirtingus rinkmenas:
 \subsubsection{Modelio apmokymas}
 
 Norint paleisti modelio apmokymą, reikia paleisti komandą: 
-\begin{verbatim}
-  make training MODEL_NAME=modelis
-\end{verbatim}
+
+\textbf{\textit{make training MODEL\_NAME=modelis}}
+
 Ši komanda yra trumpinys pilnos komandos:
-\begin{verbatim}
-  make unicharset lists proto-model training MODEL_NAME=modelis
-\end{verbatim}
+
+\textbf{\textit{make unicharset lists proto-model training MODEL\_NAME=modelis}}
 
 Vykdomos operacijos:
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item \textit{unicharset} - Sukurti galimų simbolių sąrašą.
   \item \textit{lists} - Sukurti sąrašą \textit{.lstmf} failų ir išskirstyti juos į treniravimo ir verifikavimo.
   \item \textit{training} - Pradėti mokymą.
@@ -1124,7 +1122,7 @@ Pavyzdžiai:
 
 \pagebreak
 \sectionnonum{Rezultatai}
-\begin{enumerate}%[itemsep=0.5pt]
+\begin{enumerate}[itemsep=0.5pt]%[itemsep=0.5pt]
   \item Sugeneruota 100.000 paveikslėlių, skirtų apmokyti neuroninį tinklą.
   \item Apmokytas kursinio darbo metu sukurtas neuroninis tinklas su 100.000 sugeneruotų paveikslėlių.
   \item Apmokytas modifikuotas Tesseract LSTM rekurentinis neuroninis tinklas panaudojant sugeneruotus paveikslėlius.
@@ -1157,7 +1155,7 @@ tinklo modelį.
 
 \pagebreak
 \sectionnonum{Sąvokų apibrėžimai}
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item Tesseract - optinė ženklų atpažinimo programa, kuri geba naudoti neuroninius tinklus atpažinimui.
   \item Leptonica - atviro kodo programinė įranga, skirta dirbti su paveikslėliais.
   \item Tensorflow - atviro kodo matematinė programinė įranga, naudojama darbui su neuroniais tinklais.
@@ -1169,7 +1167,7 @@ tinklo modelį.
 \end{itemize}
 
 \sectionnonum{Santrumpos}
-\begin{itemize}
+\begin{itemize}[itemsep=0.5pt]
   \item LSTM - trumpinys angl. Long short-term memory - rekurentinio neuroninio tinklo architektūra.
   \item TIFF - trumpinys angl. Tagged Image File Format - atvaizdų failų formatas, kuriame informacija nėra suspaudžiama.
   \item DPI - trumpinys angl. Dots per inch - matavimo vienetas žymintis pikselius viename colyje.
@@ -1185,7 +1183,7 @@ tinklo modelį.
 
 \appendix  % Priedai
 
-\section{Programa skirta sugeneruoti .box failus}
+\section{arg}{Programa skirta sugeneruoti .box failus}
 \lstinputlisting[language=Python,label=generate_line_box]{generate_line_box.py}
 
 \section{Programa atsitiktinai generuojanti automobilių numerius}
