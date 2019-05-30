@@ -67,7 +67,8 @@
 % daugiau kaip 0,5 puslapio. 
 Darbe analizuojami dviejų tipų neuroniniai tinklai, kurių pagalba galima iš nuotraukos atpažinti automobilio numerius.
 
-Šio darbo tikslas - sukurti programą, kuri gebėtų atpažinti lietuviškus automobilio numerius paveikslėlyje.
+Šio darbo tikslas - sumodeliuoti dviejų tipų neuroninius tinklus bei jų pagalba atpažinti lietuviškus automobilio numerius paveikslėlyje.
+
 Šiam tikslui atlikti buvo atskirtos dvi dalys. Pirmoje dalyje sugeneruojama, kuo panašesnių į realaus pasaulio sąlygas,
 paveikslėlių, kurie panaudoti apmokyti konvoliucinė neuroninį tinklą. Vėliau tinklas apmokomas su sugeneruotais duomenimis.
 Galiausiai parašoma programa, kuri randa automobilio numerio rėmelio koordinates ir išsaugo iškirptą paveikslėlį.
@@ -125,7 +126,7 @@ atpažinti numerio rėmelio koordinates. Taip pat pritaikysime bei modifikuosime
 rekurentinį neuroninį tinklą, kuris sugebės atpažinti automobilio numerio simbolius \cite{smith2007overview}.
 
 \sectionnonumnocontent{Darbo tikslas}
-Sukurti programą, kuri gebėtų atpažinti lietuviškus automobilio numerius paveikslėlyje panaudojant Tesseract LSTM rekurentinį neuroninį tinklą.
+Sumodeliuoti dviejų tipų neuroninius tinklus bei jų pagalba atpažinti lietuviškus automobilio numerius paveikslėlyje.
 
 \sectionnonumnocontent{Uždaviniai}
 \begin{enumerate}[itemsep=0.5pt]
@@ -513,7 +514,7 @@ Skirtingai nuo standartinių „feedforward“ neuroninių tinklų, LSTM turi gr
 (t.y. galima skaičiuoti viską, ką gali Turingo mašina). LSTM neuroniniai tinklai gali apdoroti ne tik statinius objektus (paveikslėlius), 
 bet ir informacijos sekas (garso įrašas ar video įrašas). LSTM dažniausiai naudojama ranka rašyto teksto ar garso atpažinimui \cite{hochreiter1997long}.
 
-LSTM tinklo paslėptame rekurentiniame lygyje yra specialūs vienetai - atminties blokai.
+LSTM tinklo paslėptame rekurentiniame lygyje yra specialūs vienetai - atminties blokai (\ref{memory_block} pav.).
 Atminties blokuose yra atminties ląstelių saugančių laikiną tinklo būseną pridedant dar specialius 
 dauginamuosius vienetus, taip vadinamus vartus, kurie kontroliuoja informacijos srauto tėkmę.
 Kiekvienas atminties blokas originalioje architektūroje yra sudarytas iš įvesties ir išvesties vartų.
@@ -620,7 +621,7 @@ Taip pat yra keletas kitų metodų, kurie turėtų būti įgyvendinti, priklauso
 Kintamo dydžio grafų aprašymo kalba (angl. Variable-size Graph Specification Language) įgalina lengvai aprašyti neuroninį tinklą, 
 susidarantį iš konvoliucijų ar LSTM tinklo ypatybių, kuris gali apdoroti kintamo dydžio paveikslėlius panaudojant vienos teksto eilutės ilgio aprašytą tinklo specifikaciją.
 
-\sectionnonumnocontent{VGSL pritaikymas}
+\subsubsubsection{VGSL pritaikymas}
 VGSL kalba sukurta aprašyti neuroniniems tinklams, kurie:
 
 \begin{itemize}[itemsep=0.5pt]
@@ -630,6 +631,7 @@ VGSL kalba sukurta aprašyti neuroniniems tinklams, kurie:
 \end{itemize}
 
 \textbf{Modelį aprašančios teksto eilutės įvestis ir išvestis}
+
 Neuroninio tinklo modelį aprašo teksto eilutė, kurioje yra aprašomos įvesties, išvesties ir tinklo lygių specifikacijos. 
 Pavyzdys: 
 
@@ -656,10 +658,11 @@ Paskutinis žodis nurodo apibūdina išvestį:
   \item Klasių skaičius yra ignoruojamas (palikta dėl suderinamumo su TensorFlow) ir tikras skaičius paimamas iš \textit{unicharset} failo.
 \end{itemize}
 
-\subsubsection{Vidinių tinklo lygių sintaksė}
+\subsubsubsection{Vidinių tinklo lygių sintaksė}
 Žemiau aprašomos funkcinės, \textit{plumbing} operacijos bei pateikiami jų pavyzdžiai.
 
 \textbf{Funkcinės operacijos}
+
 Egzistuoja 5 skirtingos funkcinės operacijos:
 
 \begin{itemize}[itemsep=0.5pt]
@@ -697,8 +700,9 @@ Pavyzdžiai:
   \item Lfys64 - tik į priekį judantis LSTM lygis, y dimensijoje turintis 64 išvestis, laikydamas x dimensiją nepriklausoma ir sutraukdamas y dimensiją iki 1 elemento.
 \end{itemize}
 
-\textbf{Plumbing ops}
-\textit{Plumbing} operacijos leidžia konstruoti pakankamai kompleksiškus grafus:
+\textbf{„Plumbing“ operacijos}
+
+\textit{„Plumbing“} operacijos leidžia konstruoti pakankamai kompleksiškus grafus:
 
 \begin{itemize}[itemsep=0.5pt]
   \item {[...]} - Vykdyti ... neuroninius tinklus nuosekliai lygiais.
@@ -742,7 +746,7 @@ Lygių aprašymas (įvesties lygis apačioje, išvesties lygis viršuje):
 
 Šis sukurtas LSTM tinklas yra atsparesnis vertikaliems teksto nuokrypiams.
 
-\subsubsection{Kintamo dydžio įvestis ir apibendrinantis LSTM lygis}
+\subsubsubsection{Kintamo dydžio įvestis ir apibendrinantis LSTM lygis}
 Kol kas vienintelis būdas sumažinti nežinomo dydžio dimensiją iki žinomo dydžio (1) yra naudojant apibendrinantį LSTM lygį.
 Vienas apibendrinantis LSTM lygis sumažins vieną dimensiją (x arba y), palikdamas vienos dimensijos seką.
 Tada vienos dimensijos seka gali būti sumažinta iki \textit{Softmax} ar logistinės aktyvacijos funkcijos išvesties.
@@ -834,13 +838,15 @@ Jei norima pamatyti, kaip Tesseract apdorojo paveiksliuką, tai galima atlikti p
 kai yra leidžiama Tesseract programa. Jei paruoštas tinklo apmokymui paveikslėlis atrodo problematiškai, neišvengiamai reikės pritaikyti viena ar daugiau paveikslėlių apdorojimo technikų
 prieš siunčiant apdorojimui.
 
-\sectionnonumnocontent{Spalvų inversija}
+\textbf{Spalvų inversija}
+
 Nors senesnės Tesseract versijos (<= 3.05) palaikė šviesų tekstą ant juodo fono be jokių problemų, nuo 4.00 versijos būtina sąlyga, kad tekstas būtų juodas, o fonas šviesus.
 Tam tikslui atlikti užtenka vienos komandos:
 
 \textbf{\textit{numpy.invert(image)}}
 
-\sectionnonumnocontent{Dydžio keitimas}
+\textbf{Dydžio keitimas}
+
 Tesseract programa geriausiai veikia, kai paduodamų paveikslėlių taškų viename colyje (angl. DPI) dydis yra bent 300, todėl labai svarbu užtikrinti, kad dydis nebūtų mažesnis.
 
 Atliktas eksperimentas\footnote{\textit{Willus Dotkom} vartotojo atliktas eksperimentas. Šaltinis https://groups.google.com/forum/\#!msg/tesseract-ocr/Wdh\_JJwnw94/24JHDYQbBQAJ}
@@ -852,8 +858,9 @@ todėl galima daryti prielaidą, kad labai svarbu pasirinkti tinkamą šrifto dy
   \captionof{figure}{Klaidų kiekio priklausomybė nuo raidžių aukščio}
   \label{tess4_error_rate}
 \end{minipage}
-\sectionnonumnocontent{Binarizacija}
-Binarizacija - tai paveiksliuko spalvų keitimas į juodą ir baltą. Tesseract jau turi integruotą funkcionalumą atlikti šiai užduočiai (naudojamas \textit{Otsu} algoritmas),
+\textbf{Binarizacija}
+
+Binarizacija - tai paveiksliuko spalvų keitimas į juodą ir baltą (\ref{binarisation} pav.). Tesseract jau turi integruotą funkcionalumą atlikti šiai užduočiai (naudojamas \textit{Otsu} algoritmas),
 tačiau ne visada rezultatas gaunasi optimalus. Tai dažniausiai lemia netolygus fono tamsumas.
 
 Jei nepavyksta išgauti geresnės kokybės nuotraukos, kuriame fono spalva būtų tolygi, yra alternatyvių ribinių verčių nustatymo algoritmų, kuriuos vertėtų išbandyti:
@@ -870,8 +877,9 @@ Jei nepavyksta išgauti geresnės kokybės nuotraukos, kuriame fono spalva būt�
   \label{binarisation}
 \end{minipage}
 
-\sectionnonumnocontent{Triukšmo pašalinimas}
-Triukšmas - tai atsitiktinis netolygaus ryškumo išsibarstymas paveikslėlyje, kuris gali padaryti tekstą sunkiai ar visai neįskaitomu.
+\textbf{Triukšmo pašalinimas}
+
+Triukšmas - tai atsitiktinis netolygaus ryškumo išsibarstymas paveikslėlyje, kuris gali padaryti tekstą sunkiai ar visai neįskaitomu (\ref{noise} pav.).
 Yra specifiniai triukšmo tipai, kurių Tesseract nesugeba pašalinti vykdydama binarizacijos etapą, todėl ženkliai sumažėja atpažinimo tikslumas.
 
 \begin{minipage}{\linewidth}
@@ -881,8 +889,9 @@ Yra specifiniai triukšmo tipai, kurių Tesseract nesugeba pašalinti vykdydama 
   \label{noise}
 \end{minipage}
 
-\sectionnonumnocontent{Pasukimas / Iškreipimas}
-Iškreiptas paveikslėlis būna tada, kai yra nuskanuojamas lapas kreivei. Tesseract linijų atpažinimo tikslumas sumažėja jei puslapis nėra visiškai horizontalus, o
+\textbf{Pasukimas / Iškreipimas}
+
+Iškreiptas paveikslėlis būna tada, kai yra nuskanuojamas lapas kreivai (\ref{skew-linedetection} pav.). Tesseract linijų atpažinimo tikslumas sumažėja jei puslapis nėra visiškai horizontalus, o
 tai įtakoja patį teksto atpažinimą. Norint išspręsti šią problemą, reikia pakreipti puslapį taip, kad tekslo linijos būtų horizontalios.
 
 \begin{minipage}{\linewidth}
@@ -892,11 +901,9 @@ tai įtakoja patį teksto atpažinimą. Norint išspręsti šią problemą, reik
   \label{skew-linedetection}
 \end{minipage}
 
-\sectionnonumnocontent{Kraštinės}
-
 \textbf{Skanuotų puslapių kraštinių naikinimas}
 
-Skanuoti puslapiai dažnai turi tamsias kraštinės aplinkui tekstą. 
+Skanuoti puslapiai dažnai turi tamsias kraštinės aplinkui tekstą (\ref{borders} pav.). 
 Tai dažnai gali būti atpažįstami kaip papildomi simboliai, ypač jei skiriasi jų formos ir atspalviai.
 
 \begin{minipage}{\linewidth}
@@ -907,12 +914,14 @@ Tai dažnai gali būti atpažįstami kaip papildomi simboliai, ypač jei skirias
 \end{minipage}
 
 \textbf{Tekstas be kraštinių}
+
 Jei norimas atpažinti tekstas visiškai neturių kraštinių ir yra nuo krašto iki krašto, Tesseract programa gali turėti sunkumų bandant atpažinti tekstą.
 Panaudojant vieną komandą, lengvai galima pridėti kraštines iš visų pusių (naudojama \textit{ImageMagick®} programa):
 
 \textbf{\textit{convert  input.jpg  -bordercolor White -border 10x10 output.jpg}}
 
-\sectionnonumnocontent{Permatomumas / alfa kanalas}
+\textbf{Permatomumas / alfa kanalas}
+
 Kai kurie paveikslėlių formatai (pvz.: png) turi alfą kanalą, kuris suteikia galimybę saugoti permatomumo reikšmę nuotraukoje.
 Alfa kanalu dažniausiai nusakomas paveikslėlio skaidrumas. Paprastai prie 24 nuotraukos bitų, kuriuose kiekvienai iš trijų pagrindinių spalvų skiriama po 8 bitus, pridedami papildomi
 8 bitai, kurie saugo skaidrumo informaciją. 
@@ -1017,7 +1026,7 @@ Vieno žodžio atpažinimo klaidų kiekį mokymo metu galima pamatyti \ref{word_
 \begin{minipage}{\linewidth}
   \centering
   \includegraphics[width=12cm]{word_stats.jpg}
-  \captionof{figure}{Simbolio klaidų kiekis mokymo metu}
+  \captionof{figure}{Žodžio klaidų kiekis mokymo metu}
   \label{word_stats}
 \end{minipage}
 
@@ -1132,7 +1141,14 @@ Pavyzdžiai:
 \end{enumerate}
 
 \sectionnonum{Išvados}
+Sumodeliuoti dviejų tipų neuroninius tinklus bei jų pagalba atpažinti lietuviškus automobilio numerius paveikslėlyje.
+
+
 Darbe buvo nagrinėta kaip išspręsti vaizdo atpažinimo problemą naudojantis neuroniniais tinklais.
+Atlikus eksperimentą buvo gautos šios išvados:
+\begin{enumerate}[itemsep=0.5pt]
+  \item 
+\end{enumerate}
 
 Išnagrinėta kaip veikia konvoliucinis neuroninis tinklas, kaip generuoti duomenis jo apmokymui,
 kaip sudaryti neuroninio tinklo lygius, kaip apmokyti tinklą su sugeneruotais duomenimis bei kaip
@@ -1183,7 +1199,7 @@ tinklo modelį.
 
 \appendix  % Priedai
 
-\section{arg}{Programa skirta sugeneruoti .box failus}
+\section{Programa skirta sugeneruoti .box failus}
 \lstinputlisting[language=Python,label=generate_line_box]{generate_line_box.py}
 
 \section{Programa atsitiktinai generuojanti automobilių numerius}

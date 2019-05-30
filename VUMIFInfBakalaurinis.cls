@@ -224,7 +224,7 @@
       \leavevmode {
       \advance\leftskip\@tempdima
       \hskip -\leftskip
-      #1}\nobreak\
+      \MakeUppercase{#1}}\nobreak\
       \leaders\hbox{$\m@th\mkern \@dotsep mu\hbox{.}\mkern \@dotsep mu$}
      \hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
     \endgroup
@@ -272,7 +272,7 @@
 
 % Literatūros sąrašą reikia pervadinti
 \addto\captionslithuanian{%
-    \renewcommand{\refname}{LITERAT\={U}ROS S\k{A}RA\v{S}AS}%
+    \renewcommand{\refname}{Literat\={u}ros s\k{a}ra\v{s}as}%
 }
 
 % Apibrėžiame ketvirto lygio skyrius
